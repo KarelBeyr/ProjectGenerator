@@ -19,6 +19,7 @@ namespace ProjectGenerator
             {
                 if (ShouldGenerateField(field, action))
                 {
+                    GenerateCommentSummary(field, sb);
                     sb.AppendLine($"    public {field.TypeName} {field.Name} {{ get; set; }}");
                 }
             }
@@ -34,6 +35,21 @@ namespace ProjectGenerator
                 ifacesString = " : " + string.Join(", ", ifaces.Select(e => e.Name));
             }
             return ifacesString;
+        }
+
+        public void GenerateCommentSummary(IHasCommentSummary ihasCommentSummary, StringBuilder sb)
+        {
+            if (ihasCommentSummary.CommentSummary != null)
+            {
+                var indent = "";
+                if (ihasCommentSummary.GetType() == typeof(Field))
+                {
+                    indent = "    ";
+                }
+                sb.AppendLine($"{indent}/// <summary>");
+                sb.AppendLine($"{indent}/// {ihasCommentSummary.CommentSummary}");
+                sb.AppendLine($"{indent}/// </summary>");
+            }
         }
 
         public virtual bool ShouldGenerateField(Field field, string action = "") => true;

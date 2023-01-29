@@ -2,29 +2,27 @@
 
 namespace ProjectGenerator;
 
-public class ModelsGenerator : GeneratorBase
+public class CommandsGenerator : GeneratorBase
 {
-    //generates models for controllers that come from REST API
+    //generates commands for service layer
     //create, update, delete
 
     public void Generate(DataModel dataModel)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Models;");   //TODO project name prefix
+        sb.AppendLine($"using {GeneratedProjectNamespace}.Models;");    //to potentially reuse base models
+        sb.AppendLine();
+        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Commands;");
         sb.AppendLine();
         foreach (var cls in dataModel.Classes.Values.Where(e => e.IsModel))
         {
-            GenerateCommentSummary(cls, sb);
-            sb.AppendLine($"public partial class {cls.Name}Model");
-            GenerateFields(cls.Fields, sb, "model");
-
-            sb.AppendLine($"public partial class Create{cls.Name}Model");
+            sb.AppendLine($"public partial class Create{cls.Name}Command");
             GenerateFields(cls.Fields, sb, "createModel");
 
-            sb.AppendLine($"public partial class Update{cls.Name}Model");
+            sb.AppendLine($"public partial class Update{cls.Name}Command");
             GenerateFields(cls.Fields, sb, "updateModel");
         }
-        File.WriteAllText($"{BasePath}Models.cs", sb.ToString());
+        File.WriteAllText($"{BasePath}Commands.cs", sb.ToString());
     }
 
     public override bool ShouldGenerateField(Field field, string action)
@@ -32,7 +30,6 @@ public class ModelsGenerator : GeneratorBase
         if (field.IsOnlyInDb) return false;
         if (field.IsOnlyCreate && action == "updateModel") return false;
         if (field.IsPrimaryKey && action == "createModel") return false;
-        if (field.IsPrimaryKey && action == "updateModel") return false;
         return true;
     }
 }

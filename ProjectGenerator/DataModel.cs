@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ProjectGenerator.Annotations;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -56,11 +58,12 @@ namespace ProjectGenerator
             var filteredMembers = allMembers.Where(e => e.GetType().Name == "RuntimePropertyInfo").Select(e => (PropertyInfo)e);
             var fields = filteredMembers.Select(e =>
             {
-                var notInDb = e.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.NotInDbAttribute));
-                var onlyInDb = e.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.OnlyInDbAttribute));
-                var onlyCreate = e.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.OnlyCreateAttribute));
-                var isPrimaryKey = e.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.PrimaryKeyAttribute));
-                return new Field() { Name = e.Name, TypeName = Utils.GetTypeName(e.PropertyType), IsNotInDb = notInDb, IsOnlyInDb = onlyInDb, IsOnlyCreate = onlyCreate, IsPrimaryKey = isPrimaryKey };
+                var notInDb = e.HasAttribute(typeof(NotInDbAttribute));
+                var onlyInDb = e.HasAttribute(typeof(OnlyInDbAttribute));
+                var onlyCreate = e.HasAttribute(typeof(OnlyCreateAttribute));
+                var isPrimaryKey = e.HasAttribute(typeof(PrimaryKeyAttribute));
+
+                return new Field() { Name = e.Name, TypeName = Utils.GetTypeName(e.PropertyType), IsNotInDb = notInDb, IsOnlyInDb = onlyInDb, IsOnlyCreate = onlyCreate, IsPrimaryKey = isPrimaryKey, CommentSummary = e.CommentSummary() };
             }).ToList();
 
             var cls = new Class()
@@ -68,8 +71,9 @@ namespace ProjectGenerator
                 Name = type.Name.Substring(1),
                 Interfaces = type.GetInterfaces().Select(e => AddInterface(e)).ToList(),
                 Fields = fields,
-                IsDbEntity = type.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.DbEntityAttribute)),
-                IsModel = type.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.ModelAttribute))
+                IsDbEntity = type.HasAttribute(typeof(DbEntityAttribute)),
+                IsModel = type.HasAttribute(typeof(ModelAttribute)),
+                CommentSummary = type.CommentSummary()
             };
 
             Classes[name] = cls;
@@ -78,7 +82,7 @@ namespace ProjectGenerator
     }
 
     [DebuggerDisplay("{TypeName} {Name}")]
-    public class Field
+    public class Field : IHasCommentSummary
     {
         public string Name { get; set; }
         public string TypeName { get; set; }
@@ -86,28 +90,35 @@ namespace ProjectGenerator
         public bool IsOnlyInDb { get; set; }
         public bool IsOnlyCreate { get; set; }
         public bool IsPrimaryKey { get; set; }
+        public string CommentSummary { get; set; }
     }
 
     [DebuggerDisplay("Interface {Name}")]
-    public class Iface : IHasInterfaces
+    public class Iface : IHasInterfaces, IHasCommentSummary
     {
         public List<Iface> Interfaces { get; set; }
         public string Name { get; set; }
         public List<Field> Fields { get; set; }
+        public string CommentSummary { get; set; }
     }
 
     [DebuggerDisplay("Class {Name}")]
-    public class Class : IHasInterfaces
+    public class Class : IHasInterfaces, IHasCommentSummary
     {
         public List<Iface> Interfaces { get; set; }
         public string Name { get; set; }
         public List<Field> Fields { get; set; }
         public bool IsDbEntity { get; set; }
         public bool IsModel { get; set; }
+        public string CommentSummary { get; set; }
     }
 
     public interface IHasInterfaces
     {
         public List<Iface> Interfaces { get; set; }
+    }
+    public interface IHasCommentSummary
+    {
+        public string CommentSummary { get; set; }
     }
 }

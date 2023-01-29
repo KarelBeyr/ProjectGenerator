@@ -9,6 +9,7 @@ public interface IHasName
 
 public interface IHasId
 {
+    [CommentSummary("Entity ID")]
     [PrimaryKey]
     public int Id { get; }
 }
@@ -20,13 +21,14 @@ public interface IHasId
 //    public string Name { get; }    //primary key, unique   //TODO decide if you want primary key string, or primary key ID, and Name will just be a unique key constraint.
 //    public string Value { get; }
 //}
-
+[CommentSummary("Object type")]
 [DbEntity, Model]
 public interface IObjectType : IHasId, IHasName
 {
     public string AuditCorrelationId { get; }
     [OnlyInDb]
     public ICollection<IAttributeDefinitionObjectType> AttributeDefinitionObjectTypes { get; set; }
+
     //[NotInDb]
     //public ICollection<IAttributeDefinition> AttributeDefinitions { get; set; }
     //[NotInDb]

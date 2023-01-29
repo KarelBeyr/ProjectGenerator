@@ -1,6 +1,8 @@
-﻿using System;
+﻿using ProjectGenerator.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,5 +52,40 @@ namespace ProjectGenerator
                 { typeof(string), "string" },
                 { typeof(void), "void" }
             };
+    }
+
+    public static class MyEx
+    {
+        public static bool HasAttribute(this PropertyInfo pi, Type attrType)
+        {
+            return pi.CustomAttributes.Any(e => e.AttributeType == attrType);
+        }
+
+        public static bool HasAttribute(this Type type, Type attrType)
+        {
+            return type.CustomAttributes.Any(e => e.AttributeType == attrType);
+        }
+
+        public static string CommentSummary(this PropertyInfo pi)
+        {
+            string commentSummary = null;
+            var attrs = (CommentSummaryAttribute[])pi.GetCustomAttributes(typeof(CommentSummaryAttribute), false);
+            if (attrs.Count() > 0)
+            {
+                commentSummary = attrs[0].Text;
+            }
+            return commentSummary;
+        }
+
+        public static string CommentSummary(this Type type)
+        {
+            string commentSummary = null;
+            var attrs = (CommentSummaryAttribute[])type.GetCustomAttributes(typeof(CommentSummaryAttribute), false);
+            if (attrs.Count() > 0)
+            {
+                commentSummary = attrs[0].Text;
+            }
+            return commentSummary;
+        }
     }
 }

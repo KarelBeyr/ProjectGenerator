@@ -30,6 +30,7 @@ public class Program
         new EntitiesGenerator().Generate(dataModel);
         new InterfacesGenerator().Generate(dataModel);
         new ModelsGenerator().Generate(dataModel);
+        new CommandsGenerator().Generate(dataModel);
     }
 
     private Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)
