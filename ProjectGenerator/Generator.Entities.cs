@@ -6,10 +6,9 @@ public class EntitiesGenerator : GeneratorBase
 {
     public void Generate(DataModel dataModel)
     {
-        var sb = new StringBuilder();
+        var sb = new IndentingStringBuilder();
         sb.AppendLine("using Microsoft.EntityFrameworkCore;");
         sb.AppendLine("using Newtonsoft.Json;");
-        sb.AppendLine("using ResourceInventory.NG.Models;");
         sb.AppendLine($"using {GeneratedProjectNamespace}.Interfaces;");
         sb.AppendLine();
         sb.AppendLine($"namespace {GeneratedProjectNamespace}.Entities;");

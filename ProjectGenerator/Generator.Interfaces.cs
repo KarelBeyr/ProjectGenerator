@@ -6,8 +6,8 @@ public class InterfacesGenerator : GeneratorBase
 {
     public void Generate(DataModel dataModel)
     {
-        var sb = new StringBuilder();
-        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Interfaces;");   //TODO project name prefix
+        var sb = new IndentingStringBuilder();
+        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Interfaces;");
         sb.AppendLine();
         foreach (var iface in dataModel.Interfaces.Values)
         {

@@ -31,6 +31,7 @@ public class Program
         new InterfacesGenerator().Generate(dataModel);
         new ModelsGenerator().Generate(dataModel);
         new CommandsGenerator().Generate(dataModel);
+        new ControllersGenerator().Generate(dataModel);
     }
 
     private Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)

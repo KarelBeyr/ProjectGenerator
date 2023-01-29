@@ -9,12 +9,12 @@ public class ModelsGenerator : GeneratorBase
 
     public void Generate(DataModel dataModel)
     {
-        var sb = new StringBuilder();
-        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Models;");   //TODO project name prefix
+        var sb = new IndentingStringBuilder();
+        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Models;");
         sb.AppendLine();
         foreach (var cls in dataModel.Classes.Values.Where(e => e.IsModel))
         {
-            GenerateCommentSummary(cls, sb);
+            GenerateXmlCommentSummary(cls, sb);
             sb.AppendLine($"public partial class {cls.Name}Model");
             GenerateFields(cls.Fields, sb, "model");
 

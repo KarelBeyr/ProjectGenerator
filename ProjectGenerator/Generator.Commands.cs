@@ -9,7 +9,7 @@ public class CommandsGenerator : GeneratorBase
 
     public void Generate(DataModel dataModel)
     {
-        var sb = new StringBuilder();
+        var sb = new IndentingStringBuilder();
         sb.AppendLine($"using {GeneratedProjectNamespace}.Models;");    //to potentially reuse base models
         sb.AppendLine();
         sb.AppendLine($"namespace {GeneratedProjectNamespace}.Commands;");

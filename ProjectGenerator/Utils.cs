@@ -52,6 +52,42 @@ namespace ProjectGenerator
                 { typeof(string), "string" },
                 { typeof(void), "void" }
             };
+
+        public static string LowerCaseFirst(string text)
+        {
+            return char.ToLower(text[0]) + text.Substring(1);
+        }
+    }
+
+    public class IndentingStringBuilder
+    {
+        public StringBuilder Sb;
+        public int indent = 0;
+
+        public IndentingStringBuilder()
+        {
+            Sb = new StringBuilder();
+        }
+
+        public void AppendLine(string text)
+        {
+            Sb.Append(new String(' ', indent));
+            Sb.AppendLine(text);
+        }
+
+        public void IncreaseIndent()
+        {
+            AppendLine("{");
+            indent += 4;
+        }
+
+        public void DecreaseIndent(string additionalText = "")
+        {
+            indent -= 4;
+            AppendLine($"}}{additionalText}");
+        }
+        public void AppendLine() => Sb.AppendLine();
+        public string ToString() => Sb.ToString();
     }
 
     public static class MyEx
