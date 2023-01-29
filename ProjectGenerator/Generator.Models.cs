@@ -24,7 +24,7 @@ public class ModelsGenerator : GeneratorBase
             sb.AppendLine($"public partial class Update{cls.Name}Model");
             GenerateFields(cls.Fields, sb, "updateModel");
         }
-        File.WriteAllText($"{BasePath}Models.cs", sb.ToString());
+        File.WriteAllText($"{BasePath}Models.g.cs", sb.ToString());
     }
 
     public override bool ShouldGenerateField(Field field, string action)

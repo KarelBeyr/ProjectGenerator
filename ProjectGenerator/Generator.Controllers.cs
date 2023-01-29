@@ -1,38 +1,17 @@
 ﻿using System.Text;
+using System.Xml.Linq;
 
 namespace ProjectGenerator;
 
 public class ControllersGenerator : GeneratorBase
 {
     //generates controllers
-    /*
-    /// <summary>
-    /// Updates UserSettingsDefault.
-    /// </summary>
-    /// <param name="name">name of the user setting default to be updated.</param>
-    /// <param name="request">Complete new state of the USerSetting.</param>
-    /// <response code="204">Update was successful.</response>
-    /// <response code="404">If invalid <paramref name="id"/> was passed.</response>
-    /// <response code="400">If update cannot be performed, contains reason why.</response>
-    [HttpPatch("{name}")]
-    public async Task<ActionResult> UpdateUserSettings([FromRoute] string name, [FromBody] UpdateUserSettingDefaultModel request)
-    {
-        await _userSettingDefaultsService.Update(new UpdateUserSettingDefaultCommand
-        {
-            Name = name,
-            NewValue = request.Value
-        });
-        return NoContent();
-    }
-
-     */
-
     public void Generate(DataModel dataModel)
     {
         foreach (var cls in dataModel.Classes.Values.Where(e => e.IsModel))
         {
             var serviceName = $"_{Utils.LowerCaseFirst(cls.Name)}Service";
-            var pkField = cls.Fields.First(e => e.IsPrimaryKey);
+            var pkField = cls.PrimaryKeyField();
             var pkFieldVarName = Utils.LowerCaseFirst(pkField.Name);
             var sb = new IndentingStringBuilder();
 
@@ -104,20 +83,37 @@ public class ControllersGenerator : GeneratorBase
             GenerateXmlComment("response code=\"204\"", $"Update was successful.", sb, true);
             GenerateXmlComment("response code=\"404\"", $"If invalid <paramref name=\"{pkFieldVarName}\"/> was passed.", sb, true);
             GenerateXmlComment("response code=\"400\"", $"If update cannot be performed, contains reason why.", sb, true);
-
             sb.AppendLine($"[HttpPatch(\"{{{pkFieldVarName}}}\")]");
-            //TODO!!!
-            sb.AppendLine($"[ProducesResponseType(typeof({pkField.TypeName}), StatusCodes.Status201Created)]");
-            sb.AppendLine($"[ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]");
-            sb.AppendLine($"public async Task<ActionResult<{cls.Name}>> Get([FromRoute] {pkField.TypeName} {pkFieldVarName})");
+            sb.AppendLine($"public async Task<ActionResult> Update([FromRoute] {pkField.TypeName} {pkFieldVarName}, [FromBody] Update{cls.Name}Model request)");
             sb.IncreaseIndent();
-            sb.AppendLine($"var res = await {serviceName}.Get({pkFieldVarName});");
-            sb.AppendLine($"return Ok(res);");
+            sb.AppendLine($"await {serviceName}.Update(new Update{cls.Name}Command");
+            sb.IncreaseIndent();
+            foreach (var field in cls.Fields.Where(e => !e.IsPrimaryKey && !e.IsOnlyInDb && !e.IsOnlyCreate))
+            {
+                sb.AppendLine($"{field.Name} = request.{field.Name},");
+            }
+            sb.DecreaseIndent(");");
+            sb.AppendLine($"return NoContent();");
+            sb.DecreaseIndent();
+            sb.AppendLine();
+
+            ///////////////DELETE
+            GenerateXmlComment("summary", $"Deletes {cls.Name}", sb);
+            GenerateXmlComment($"param name=\"{pkFieldVarName}\"", $"{pkField.Name} of {cls.Name} to be deleted", sb, true);
+            GenerateXmlComment("response code=\"204\"", $"Delete was successful.", sb, true);
+            GenerateXmlComment("response code=\"404\"", $"If invalid <paramref name=\"{pkFieldVarName}\"/> was passed.", sb, true);
+            sb.AppendLine($"[HttpDelete(\"{{{pkFieldVarName}}}\")]");
+            sb.AppendLine($"public async Task<ActionResult> Delete([FromRoute] {pkField.TypeName} {pkFieldVarName})");
+            sb.IncreaseIndent();
+            sb.AppendLine($"await {serviceName}.Delete(new Delete{cls.Name}Command");
+            sb.IncreaseIndent();
+            sb.AppendLine($"{pkField.Name} = {pkFieldVarName}");
+            sb.DecreaseIndent(");");
+            sb.AppendLine($"return NoContent();");
             sb.DecreaseIndent();
 
             sb.DecreaseIndent();
-
-            File.WriteAllText($"{BasePath}Controllers.{cls.Name}.cs", sb.ToString());
+            File.WriteAllText($"{BasePath}Controllers.{cls.Name}.g.cs", sb.ToString());
         }
     }
 

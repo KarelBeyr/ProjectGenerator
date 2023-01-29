@@ -19,7 +19,7 @@ public class EntitiesGenerator : GeneratorBase
             sb.AppendLine($"public partial class {cls.Name}{ifacesString}");
             GenerateFields(cls.Fields, sb);
         }
-        File.WriteAllText($"{BasePath}Entities.cs", sb.ToString());
+        File.WriteAllText($"{BasePath}Entities.g.cs", sb.ToString());
     }
 
     public override bool ShouldGenerateField(Field field, string action) => !field.IsNotInDb;
