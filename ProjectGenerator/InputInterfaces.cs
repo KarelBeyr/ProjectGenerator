@@ -1,5 +1,4 @@
 ﻿using ProjectGenerator.Annotations;
-using System.ComponentModel.DataAnnotations;
 
 namespace ProjectGenerator.InputInterfaces;
 
@@ -10,7 +9,7 @@ public interface IHasName
 
 public interface IHasId
 {
-    [Key]
+    [PrimaryKey]
     public int Id { get; }
 }
 
@@ -22,27 +21,31 @@ public interface IHasId
 //    public string Value { get; }
 //}
 
-[DbEntity]
+[DbEntity, Model]
 public interface IObjectType : IHasId, IHasName
 {
     public string AuditCorrelationId { get; }
+    [OnlyInDb]
     public ICollection<IAttributeDefinitionObjectType> AttributeDefinitionObjectTypes { get; set; }
-    [NotInDb]
-    public ICollection<IAttributeDefinition> AttributeDefinitions { get; set; }
+    //[NotInDb]
+    //public ICollection<IAttributeDefinition> AttributeDefinitions { get; set; }
+    //[NotInDb]
+    //public ICollection<int> AttributeDefinitionIds { get; set; }
 }
 
 [DbEntity]
 public interface IAttributeDefinitionObjectType
 {
-    [Key]
+    [PrimaryKey]
     public IAttributeDefinition AttributeDefinition { get; }
-    [Key]
+    [PrimaryKey]
     public IObjectType ObjectType { get; }
     public string AuditCorrelationId { get; set; }
 }
 
-[DbEntity]
+[DbEntity, Model]
 public interface IAttributeDefinition : IHasId, IHasName
 {
+    [OnlyCreate]
     public string Type { get; set; }
 }

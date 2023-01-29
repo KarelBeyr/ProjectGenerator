@@ -10,13 +10,14 @@ namespace ProjectGenerator
     public class GeneratorBase
     {
         public string BasePath = @"c:\projects\GeneratedProject\GeneratedProject\";
+        public string GeneratedProjectNamespace = "GeneratedProject";
 
-        public void GenerateFields(IEnumerable<Field> fields, StringBuilder sb)
+        public void GenerateFields(IEnumerable<Field> fields, StringBuilder sb, string action = "")
         {
             sb.AppendLine("{");
             foreach (var field in fields)
             {
-                if (!field.NotInDb)
+                if (ShouldGenerateField(field, action))
                 {
                     sb.AppendLine($"    public {field.TypeName} {field.Name} {{ get; set; }}");
                 }
@@ -34,5 +35,7 @@ namespace ProjectGenerator
             }
             return ifacesString;
         }
+
+        public virtual bool ShouldGenerateField(Field field, string action = "") => true;
     }
 }

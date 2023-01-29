@@ -10,15 +10,18 @@ public class EntitiesGenerator : GeneratorBase
         sb.AppendLine("using Microsoft.EntityFrameworkCore;");
         sb.AppendLine("using Newtonsoft.Json;");
         sb.AppendLine("using ResourceInventory.NG.Models;");
+        sb.AppendLine($"using {GeneratedProjectNamespace}.Interfaces;");
         sb.AppendLine();
-        sb.AppendLine("namespace GeneratedProject;");   //TODO project name prefix
+        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Entities;");
         sb.AppendLine();
-        foreach (var cls in dataModel.Classes.Values)
+        foreach (var cls in dataModel.Classes.Values.Where(e => e.IsDbEntity))
         {
             var ifacesString = GetInterfacesString(cls);
-            sb.AppendLine($"public class {cls.Name}{ifacesString}");
+            sb.AppendLine($"public partial class {cls.Name}{ifacesString}");
             GenerateFields(cls.Fields, sb);
         }
         File.WriteAllText($"{BasePath}Entities.cs", sb.ToString());
     }
+
+    public override bool ShouldGenerateField(Field field, string action) => !field.IsNotInDb;
 }

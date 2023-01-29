@@ -18,7 +18,14 @@ namespace ProjectGenerator
             if (memberType.GenericTypeArguments.Count() > 0)        //collection, maybe not ideal test
             {
                 memberTypeName = memberTypeName.Substring(0, memberTypeName.IndexOf('`'));
-                return memberTypeName + $"<{memberType.GenericTypeArguments[0].Name.Substring(1)}>";
+                var genericMemberType = memberType.GenericTypeArguments[0];
+                var genericMemberTypeName = genericMemberType.Name.Substring(1);
+                if (Aliases.ContainsKey(genericMemberType))
+                {
+                    genericMemberTypeName = Aliases[genericMemberType];
+                }
+
+                return memberTypeName + $"<{genericMemberTypeName}>";
             }
             return memberTypeName.Substring(1);     //my custom type, maybe not ideal test
         }

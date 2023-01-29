@@ -7,7 +7,7 @@ public class InterfacesGenerator : GeneratorBase
     public void Generate(DataModel dataModel)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("namespace GeneratedProject;");   //TODO project name prefix
+        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Interfaces;");   //TODO project name prefix
         sb.AppendLine();
         foreach (var iface in dataModel.Interfaces.Values)
         {

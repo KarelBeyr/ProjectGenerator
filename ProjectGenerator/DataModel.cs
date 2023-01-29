@@ -29,7 +29,7 @@ namespace ProjectGenerator
             var fields = filteredMembers.Select(e =>
             {
                 var notInDb = e.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.NotInDbAttribute));
-                return new Field() { Name = e.Name, TypeName = Utils.GetTypeName(e.PropertyType), NotInDb = notInDb };
+                return new Field() { Name = e.Name, TypeName = Utils.GetTypeName(e.PropertyType), IsNotInDb = notInDb };
             }).ToList();
 
             var iface = new Iface()
@@ -57,14 +57,19 @@ namespace ProjectGenerator
             var fields = filteredMembers.Select(e =>
             {
                 var notInDb = e.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.NotInDbAttribute));
-                return new Field() { Name = e.Name, TypeName = Utils.GetTypeName(e.PropertyType), NotInDb = notInDb };
+                var onlyInDb = e.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.OnlyInDbAttribute));
+                var onlyCreate = e.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.OnlyCreateAttribute));
+                var isPrimaryKey = e.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.PrimaryKeyAttribute));
+                return new Field() { Name = e.Name, TypeName = Utils.GetTypeName(e.PropertyType), IsNotInDb = notInDb, IsOnlyInDb = onlyInDb, IsOnlyCreate = onlyCreate, IsPrimaryKey = isPrimaryKey };
             }).ToList();
 
             var cls = new Class()
             {
                 Name = type.Name.Substring(1),
                 Interfaces = type.GetInterfaces().Select(e => AddInterface(e)).ToList(),
-                Fields = fields
+                Fields = fields,
+                IsDbEntity = type.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.DbEntityAttribute)),
+                IsModel = type.CustomAttributes.Any(e => e.AttributeType == typeof(Annotations.ModelAttribute))
             };
 
             Classes[name] = cls;
@@ -77,7 +82,10 @@ namespace ProjectGenerator
     {
         public string Name { get; set; }
         public string TypeName { get; set; }
-        public bool NotInDb { get; set; }
+        public bool IsNotInDb { get; set; }
+        public bool IsOnlyInDb { get; set; }
+        public bool IsOnlyCreate { get; set; }
+        public bool IsPrimaryKey { get; set; }
     }
 
     [DebuggerDisplay("Interface {Name}")]
@@ -94,6 +102,8 @@ namespace ProjectGenerator
         public List<Iface> Interfaces { get; set; }
         public string Name { get; set; }
         public List<Field> Fields { get; set; }
+        public bool IsDbEntity { get; set; }
+        public bool IsModel { get; set; }
     }
 
     public interface IHasInterfaces
