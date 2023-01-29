@@ -14,10 +14,16 @@ public interface IHasId
     public int Id { get; }
 }
 
-public interface IEntity : IHasId 
-{ }
+//[DbEntity]
+//public interface IUserSettingDefault : IEntity, IHasName
+//{
+//    [Key]
+//    public string Name { get; }    //primary key, unique   //TODO decide if you want primary key string, or primary key ID, and Name will just be a unique key constraint.
+//    public string Value { get; }
+//}
 
-public interface IObjectType : IEntity, IHasId, IHasName
+[DbEntity]
+public interface IObjectType : IHasId, IHasName
 {
     public string AuditCorrelationId { get; }
     public ICollection<IAttributeDefinitionObjectType> AttributeDefinitionObjectTypes { get; set; }
@@ -25,16 +31,18 @@ public interface IObjectType : IEntity, IHasId, IHasName
     public ICollection<IAttributeDefinition> AttributeDefinitions { get; set; }
 }
 
-public interface IAttributeDefinitionObjectType : IEntity
+[DbEntity]
+public interface IAttributeDefinitionObjectType
 {
     [Key]
-    public IAttributeDefinition AttributeDefinition { get;  }
+    public IAttributeDefinition AttributeDefinition { get; }
     [Key]
     public IObjectType ObjectType { get; }
     public string AuditCorrelationId { get; set; }
 }
 
-public interface IAttributeDefinition : IEntity, IHasId, IHasName
-{ 
+[DbEntity]
+public interface IAttributeDefinition : IHasId, IHasName
+{
     public string Type { get; set; }
 }

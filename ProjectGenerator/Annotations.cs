@@ -2,10 +2,6 @@
 
 namespace ProjectGenerator.Annotations;
 
-//[AttributeUsage(AttributeTargets.Parameter)]
-public class NotInDbAttribute : System.Attribute
-{
-    public NotInDbAttribute()
-    {
-    }
-}
+public class NotInDbAttribute : System.Attribute {}
+
+public class DbEntityAttribute : System.Attribute { }

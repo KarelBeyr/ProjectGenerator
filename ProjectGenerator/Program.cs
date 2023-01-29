@@ -16,45 +16,19 @@ public class Program
     public void Run()
     {
         var allTypes = GetTypesInNamespace(Assembly.GetExecutingAssembly(), "ProjectGenerator.InputInterfaces");
-        var entityTypes = allTypes.Where(e => e.GetInterfaces().Contains(typeof(IEntity)));
-        var interfaceTypes = allTypes.Where(e => !e.GetInterfaces().Contains(typeof(IEntity)));
-
-        var entityDict = new Dictionary<Type, IEnumerable<PropertyInfo>>();
-        var ifaceDict = new Dictionary<Type, IEnumerable<PropertyInfo>>();
+        var dataModel = new DataModel();
         foreach (var type in allTypes)
         { 
-            Console.WriteLine(type.Name);
-
-            var inheritedMembers = type.GetInterfaces().SelectMany(x => x.GetMembers());
-            var ownMembers = type.GetMembers();
-
-            var allMembers = ownMembers.ToList();
-            IEnumerable<PropertyInfo> filteredMembers;
-
-            if (type.GetInterfaces().Contains(typeof(IEntity)))
+            if (type.CustomAttributes.SingleOrDefault(e => e.AttributeType == typeof(Annotations.DbEntityAttribute)) != null)
             {
-                allMembers.AddRange(inheritedMembers);
-                filteredMembers = allMembers.Where(e => e.GetType().Name == "RuntimePropertyInfo").Select(e => (PropertyInfo)e);
-                entityDict[type] = filteredMembers;
+                dataModel.AddClass(type);
             } else
             {
-                filteredMembers = allMembers.Where(e => e.GetType().Name == "RuntimePropertyInfo").Select(e => (PropertyInfo)e);
-                ifaceDict[type] = filteredMembers;
+                dataModel.AddInterface(type);
             }
-
-            foreach (var member in filteredMembers)
-            {
-                Console.WriteLine($" {member.PropertyType.Name} {member.Name}");
-                foreach (var ca in member.CustomAttributes)
-                {
-                    Console.WriteLine($"  {ca}");
-                }
-            }
-            Console.WriteLine();
         }
-        new EntitiesGenerator().Generate(entityDict);
-        new InterfacesGenerator().Generate(entityDict, ifaceDict);
-        
+        new EntitiesGenerator().Generate(dataModel);
+        new InterfacesGenerator().Generate(dataModel);
     }
 
     private Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)
@@ -63,6 +37,7 @@ public class Program
                   .Where(t => String.Equals(t.Namespace, nameSpace, StringComparison.Ordinal))
                   .ToArray();
     }
+
 
 
 }
