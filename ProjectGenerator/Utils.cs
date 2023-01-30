@@ -35,6 +35,7 @@ namespace ProjectGenerator
         private static readonly Dictionary<Type, string> Aliases =
             new Dictionary<Type, string>()
             {
+                { typeof(Guid), "Guid" },   //HACK
                 { typeof(byte), "byte" },
                 { typeof(sbyte), "sbyte" },
                 { typeof(short), "short" },
