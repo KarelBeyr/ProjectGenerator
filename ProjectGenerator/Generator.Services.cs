@@ -17,16 +17,16 @@ public class ServicesGenerator : GeneratorBase
             var pkFieldVarName = Utils.LowerCaseFirst(pkField.Name);
             var sb = new IndentingStringBuilder();
 
-            sb.AppendLine($"using {GeneratedProjectNamespace}.Infrastructure;");
-            sb.AppendLine($"using {GeneratedProjectNamespace}.Repositories;");
-            sb.AppendLine($"using {GeneratedProjectNamespace}.Commands;");
-            sb.AppendLine($"using {GeneratedProjectNamespace}.Interfaces;");
-            sb.AppendLine($"using {GeneratedProjectNamespace}.Entities;");
-            sb.AppendLine($"using {GeneratedProjectNamespace}.Models;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Infrastructure;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Repositories;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Commands;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Interfaces;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Entities;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Models;");
             sb.AppendLine($"using IOTA.Core.Security;");
             
 
-            sb.AppendLine($"namespace {GeneratedProjectNamespace}.Services;");
+            sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Services;");
             sb.AppendLine();
 
             sb.AppendLine($"public class {serviceName}: I{serviceName}");
@@ -60,26 +60,6 @@ public class ServicesGenerator : GeneratorBase
             sb.AppendLine();
 
             ///////////////CREATE
-            /*
-            async Task<bool> IUserSettingDefaultsService.Create(CreateUserSettingDefaultCommand command)
-            {
-                EnsurePermissionAndAccess("SecNG_UserSettingDefaults_CRUD", command.Authorization);
-
-                //TODO_Dejan: In IOTP-725 Iva mentions endpoint for Create/Update. I don't know if it means two endpoints, or just one. I leave it up to you to decide (but I personally would prefer to have two endpoins. Create endpoint should check for existing value and fail if it already exists. Update, on the other hand, should fail if it does not exist)
-                var found = await _userSettingDefaultsRepository.GetUserSettingDefaultByName(command.Name);
-                if (found != null) throw new InvalidStateException("User setting default with given name already exists");
-
-                var entity = new UserSettingDefault
-                {
-                    Name = command.Name,
-                    Value = command.Value
-                };
-
-                _userSettingDefaultsRepository.Save(entity);
-                await _unitOfWork.SaveChanges();
-                return true;
-            }
-            */
             sb.AppendLine($"async Task<{pkField.TypeName}> I{serviceName}.Create(Create{cls.Name}Command command)");
             sb.IncreaseIndent();
             sb.AppendLine("//TODO EnsurePermissionAndAccess(...) ");
@@ -99,20 +79,69 @@ public class ServicesGenerator : GeneratorBase
             sb.AppendLine($"_unitOfWork.SaveChanges();");
             sb.AppendLine($"return entity.{pkField.Name};");
             sb.DecreaseIndent();
+            sb.AppendLine();
+            ////////////UPDATE
+            /*
+            async Task<bool> IUserSettingDefaultsService.Update(UpdateUserSettingDefaultCommand command)
+            {
+                var entity = await _userSettingDefaultsRepository.GetUserSettingDefaultByNameForUpdate(command.Name);
+                if (entity == null) throw new NotFoundException("User setting default with given name does not exist");
 
+                entity.Value = command.NewValue;
 
-
+                await _unitOfWork.SaveChanges();
+                return true;
+            }
+             */
+            sb.AppendLine($"async Task I{serviceName}.Update(Update{cls.Name}Command command)");
+            sb.IncreaseIndent();
+            sb.AppendLine($"var entity = await {repositoryName}.GetForUpdate(command.{pkField.Name});");
+            sb.AppendLine($"if (entity == null) throw new NotFoundException(\"{cls.Name} with given {pkField.Name} does not exist\");");
+            foreach (var field in cls.Fields.Where(e => !e.IsPrimaryKey && !e.IsOnlyInDb))
+            {
+                sb.AppendLine($"entity.{field.Name} = command.{field.Name};");
+            }
+            sb.AppendLine($"_unitOfWork.SaveChanges();");
             sb.DecreaseIndent();
-File.WriteAllText($"{BasePath}Services.{cls.Name}.g.cs", sb.ToString());
-}
-}
+            sb.AppendLine();
 
-public override bool ShouldGenerateField(Field field, string action)
-{
-if (field.IsOnlyInDb) return false;
-if (field.IsOnlyCreate && action == "updateModel") return false;
-if (field.IsPrimaryKey && action == "createModel") return false;
-if (field.IsPrimaryKey && action == "updateModel") return false;
-return true;
-}
+            ////////////////DELETE
+            sb.AppendLine($"async Task I{serviceName}.Delete(Delete{cls.Name}Command command)");
+            sb.IncreaseIndent();
+            sb.AppendLine($"var entity = await {repositoryName}.Get(command.{pkField.Name});");
+            sb.AppendLine($"if (entity == null) throw new NotFoundException(\"{cls.Name} with given {pkField.Name} does not exist\");");
+            sb.AppendLine($"{repositoryName}.Delete(entity)");
+            sb.AppendLine($"_unitOfWork.SaveChanges();");
+            sb.DecreaseIndent();
+            sb.AppendLine();
+            sb.DecreaseIndent();
+
+            Directory.CreateDirectory($"{Program.BasePath}Services\\Interfaces");
+            File.WriteAllText($"{Program.BasePath}Services\\{cls.Name}Service.g.cs", sb.ToString());
+
+            sb = new IndentingStringBuilder();
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Models;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Commands;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Services;");
+            sb.AppendLine();
+            sb.AppendLine($"public interface I{serviceName}");
+            sb.IncreaseIndent();
+            sb.AppendLine($"Task<{cls.Name}Model> Get({pkField.TypeName} {pkFieldVarName});");
+            sb.AppendLine($"Task<{pkField.TypeName}> Create(Create{cls.Name}Command command);");
+            sb.AppendLine($"Task Update(Update{cls.Name}Command command);");
+            sb.AppendLine($"Task Delete(Delete{cls.Name}Command command);");
+            sb.DecreaseIndent();
+            File.WriteAllText($"{Program.BasePath}Services\\Interfaces\\I{cls.Name}Service.g.cs", sb.ToString());
+        }
+    }
+
+    public override bool ShouldGenerateField(Field field, string action)
+    {
+        if (field.IsOnlyInDb) return false;
+        if (field.IsOnlyCreate && action == "updateModel") return false;
+        if (field.IsPrimaryKey && action == "createModel") return false;
+        if (field.IsPrimaryKey && action == "updateModel") return false;
+        return true;
+    }
 }

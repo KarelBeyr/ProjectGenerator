@@ -17,12 +17,12 @@ public class ControllersGenerator : GeneratorBase
 
             sb.AppendLine("using Microsoft.AspNetCore.Http;");
             sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
-            sb.AppendLine($"using {GeneratedProjectNamespace}.Entities;");
-            sb.AppendLine($"using {GeneratedProjectNamespace}.Models;");
-            sb.AppendLine($"using {GeneratedProjectNamespace}.Commands;");
-            sb.AppendLine($"using {GeneratedProjectNamespace}.Interfaces;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Entities;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Models;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Commands;");
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Interfaces;");
 
-            sb.AppendLine($"namespace {GeneratedProjectNamespace}.Controllers;");
+            sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Controllers;");
             sb.AppendLine();
 
             GenerateXmlComment("summary", $"{cls.Name} controller", sb);
@@ -113,7 +113,8 @@ public class ControllersGenerator : GeneratorBase
             sb.DecreaseIndent();
 
             sb.DecreaseIndent();
-            File.WriteAllText($"{BasePath}Controllers.{cls.Name}.g.cs", sb.ToString());
+            Directory.CreateDirectory($"{Program.BasePath}Controllers");
+            File.WriteAllText($"{Program.BasePath}Controllers\\{cls.Name}Controller.g.cs", sb.ToString());
         }
     }
 

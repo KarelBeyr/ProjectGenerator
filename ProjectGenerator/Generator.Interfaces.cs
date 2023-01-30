@@ -7,7 +7,7 @@ public class InterfacesGenerator : GeneratorBase
     public void Generate(DataModel dataModel)
     {
         var sb = new IndentingStringBuilder();
-        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Interfaces;");
+        sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Interfaces;");
         sb.AppendLine();
         foreach (var iface in dataModel.Interfaces.Values)
         {
@@ -15,6 +15,6 @@ public class InterfacesGenerator : GeneratorBase
             sb.AppendLine($"public interface {iface.Name}{ifacesString}");
             GenerateFields(iface.Fields, sb);
         }
-        File.WriteAllText($"{BasePath}Interfaces.g.cs", sb.ToString());
+        File.WriteAllText($"{Program.BasePath}Interfaces.g.cs", sb.ToString());
     }
 }

@@ -10,7 +10,7 @@ public class ModelsGenerator : GeneratorBase
     public void Generate(DataModel dataModel)
     {
         var sb = new IndentingStringBuilder();
-        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Models;");
+        sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Models;");
         sb.AppendLine();
         foreach (var cls in dataModel.Classes.Values.Where(e => e.IsModel))
         {
@@ -24,7 +24,9 @@ public class ModelsGenerator : GeneratorBase
             sb.AppendLine($"public partial class Update{cls.Name}Model");
             GenerateFields(cls.Fields, sb, "updateModel");
         }
-        File.WriteAllText($"{BasePath}Models.g.cs", sb.ToString());
+        Directory.CreateDirectory($"{Program.BasePath}Controllers");
+
+        File.WriteAllText($"{Program.BasePath}Controllers\\Models.g.cs", sb.ToString());
     }
 
     public override bool ShouldGenerateField(Field field, string action)

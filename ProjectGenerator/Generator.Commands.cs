@@ -10,9 +10,9 @@ public class CommandsGenerator : GeneratorBase
     public void Generate(DataModel dataModel)
     {
         var sb = new IndentingStringBuilder();
-        sb.AppendLine($"using {GeneratedProjectNamespace}.Models;");    //to potentially reuse base models
+        sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Models;");    //to potentially reuse base models. Only some generated project will need this using, we can add some conditional logic later.
         sb.AppendLine();
-        sb.AppendLine($"namespace {GeneratedProjectNamespace}.Commands;");
+        sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Commands;");
         sb.AppendLine();
         foreach (var cls in dataModel.Classes.Values.Where(e => e.IsModel))
         {
@@ -25,7 +25,8 @@ public class CommandsGenerator : GeneratorBase
             sb.AppendLine($"public partial class Delete{cls.Name}Command");
             GenerateFields(cls.Fields, sb, "deleteModel");
         }
-        File.WriteAllText($"{BasePath}Commands.g.cs", sb.ToString());
+        Directory.CreateDirectory($"{Program.BasePath}Services");
+        File.WriteAllText($"{Program.BasePath}Services\\Commands.g.cs", sb.ToString());
     }
 
     public override bool ShouldGenerateField(Field field, string action)

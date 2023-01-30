@@ -9,9 +9,6 @@ namespace ProjectGenerator
 {
     public class GeneratorBase
     {
-        public string BasePath = @"c:\projects\GeneratedProject\GeneratedProject\";
-        public string GeneratedProjectNamespace = "GeneratedProject";
-
         public void GenerateFields(IEnumerable<Field> fields, IndentingStringBuilder sb, string action = "")
         {
             sb.IncreaseIndent();

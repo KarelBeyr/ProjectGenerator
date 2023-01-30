@@ -114,6 +114,7 @@ namespace ProjectGenerator
         public bool IsModel { get; set; }
         public string CommentSummary { get; set; }
         public Field PrimaryKeyField() => Fields.First(e => e.IsPrimaryKey);
+        public IEnumerable<Field> PrimaryKeyFields() => Fields.Where(e => e.IsPrimaryKey);
     }
 
     public interface IHasInterfaces
