@@ -34,17 +34,17 @@ public class RepositoriesGenerator : GeneratorBase
             sb.AppendLine();
 
             ///////////////GET
-            sb.AppendLine($"public async Task<{cls.Name}Model> Get({pkField.TypeName} {pkFieldVarName})");
+            sb.AppendLine($"public async Task<{cls.Name}> Get({pkField.TypeName} {pkFieldVarName})");
             sb.IncreaseIndent();
             sb.AppendLine($"return await DbSet.SingleOrDefaultAsync(e => e.{pkField.Name} == {pkFieldVarName});");
-            sb.DecreaseIndent(";");
+            sb.DecreaseIndent();
             sb.AppendLine();
 
             ///////////////GET for tracking
-            sb.AppendLine($"public async Task<{cls.Name}Model> GetForUpdate({pkField.TypeName} {pkFieldVarName})");
+            sb.AppendLine($"public async Task<{cls.Name}> GetForUpdate({pkField.TypeName} {pkFieldVarName})");
             sb.IncreaseIndent();
             sb.AppendLine($"return await DbSet.AsTracking().SingleOrDefaultAsync(e => e.{pkField.Name} == {pkFieldVarName});");
-            sb.DecreaseIndent(";");
+            sb.DecreaseIndent();
             sb.AppendLine();
 
             ////////////SAVE
@@ -58,7 +58,7 @@ public class RepositoriesGenerator : GeneratorBase
             sb.AppendLine($"public void Delete({cls.Name} entity)");
             sb.IncreaseIndent();
             sb.AppendLine("DbSet.Remove(entity);");
-            sb.DecreaseIndent(";");
+            sb.DecreaseIndent();
             sb.AppendLine();
 
             sb.DecreaseIndent();
@@ -72,10 +72,10 @@ public class RepositoriesGenerator : GeneratorBase
             sb.AppendLine();
             sb.AppendLine($"public interface I{cls.Name}Repository");
             sb.IncreaseIndent();
-            sb.AppendLine($"async Task<{cls.Name}Model> Get({pkField.TypeName} {pkFieldVarName})");
-            sb.AppendLine($"async Task<{cls.Name}Model> GetForUpdate({pkField.TypeName} {pkFieldVarName})");
-            sb.AppendLine($"void Save({cls.Name} entity)");
-            sb.AppendLine($"void Delete({cls.Name} entity)");
+            sb.AppendLine($"Task<{cls.Name}> Get({pkField.TypeName} {pkFieldVarName});");
+            sb.AppendLine($"Task<{cls.Name}> GetForUpdate({pkField.TypeName} {pkFieldVarName});");
+            sb.AppendLine($"void Save({cls.Name} entity);");
+            sb.AppendLine($"void Delete({cls.Name} entity);");
             sb.DecreaseIndent();
             File.WriteAllText($"{Program.BasePath}Repositories\\Interfaces\\I{cls.Name}Repository.g.cs", sb.ToString());
         }

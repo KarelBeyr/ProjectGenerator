@@ -4,7 +4,7 @@ namespace ProjectGenerator;
 
 public class DbContextGenerator : GeneratorBase
 {
-    //generates {projectName}DbContext.cs
+    //generates {DbSchema}DbContext.cs
 
     public void Generate(DataModel dataModel)
     {
@@ -14,7 +14,7 @@ public class DbContextGenerator : GeneratorBase
         sb.AppendLine();
         sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}s;");
         sb.AppendLine();
-        sb.AppendLine($"public class {Program.GeneratedProjectNamespace}DbContext : DbContext");
+        sb.AppendLine($"public class {Program.DbSchema}DbContext : DbContext");
         sb.IncreaseIndent();
         sb.AppendLine($"public const string Schema = \"{Program.DbSchema}\";");
         sb.AppendLine();
@@ -44,6 +44,6 @@ public class DbContextGenerator : GeneratorBase
         }
         sb.DecreaseIndent();
 
-        File.WriteAllText($"{Program.BasePath}{Program.GeneratedProjectNamespace}DbContext.g.cs", sb.ToString());
+        File.WriteAllText($"{Program.BasePath}{Program.DbSchema}DbContext.g.cs", sb.ToString());
     }
 }

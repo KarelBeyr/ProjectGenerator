@@ -110,7 +110,7 @@ public class ServicesGenerator : GeneratorBase
             sb.IncreaseIndent();
             sb.AppendLine($"var entity = await {repositoryName}.Get(command.{pkField.Name});");
             sb.AppendLine($"if (entity == null) throw new NotFoundException(\"{cls.Name} with given {pkField.Name} does not exist\");");
-            sb.AppendLine($"{repositoryName}.Delete(entity)");
+            sb.AppendLine($"{repositoryName}.Delete(entity);");
             sb.AppendLine($"_unitOfWork.SaveChanges();");
             sb.DecreaseIndent();
             sb.AppendLine();
