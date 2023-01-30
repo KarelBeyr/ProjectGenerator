@@ -16,7 +16,7 @@ public class Program
     //TODO1: Update file InputInterfaces.cs
     //TODO2: Set those constants
     public static string BasePath = @"c:\projects\GeneratedProject\GeneratedProject\";
-    public static string GeneratedProjectNamespace = "GeneratedProject";
+    public static string GeneratedProjectNamespace = "Security.NG";
     public static string DbSchema = "SecNG";
     //TODO3: Run and 🙏 
 

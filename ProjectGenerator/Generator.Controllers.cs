@@ -20,8 +20,8 @@ public class ControllersGenerator : GeneratorBase
             sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Entities;");
             sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Models;");
             sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Commands;");
-            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Interfaces;");
-
+            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Services;");
+            sb.AppendLine();
             sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Controllers;");
             sb.AppendLine();
 
