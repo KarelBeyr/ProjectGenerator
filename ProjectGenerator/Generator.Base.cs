@@ -9,7 +9,7 @@ namespace ProjectGenerator
 {
     public class GeneratorBase
     {
-        public void GenerateFields(IEnumerable<Field> fields, IndentingStringBuilder sb, string action = "")
+        public void GenerateFields(IEnumerable<Field> fields, IndentingStringBuilder sb, string action = "", Action<IndentingStringBuilder, IEnumerable<Field>> generateAdditionalFields = null)
         {
             sb.IncreaseIndent();
             foreach (var field in fields)
@@ -20,6 +20,7 @@ namespace ProjectGenerator
                     sb.AppendLine($"public {field.TypeName} {field.Name} {{ get; set; }}");
                 }
             }
+            if (generateAdditionalFields != null) generateAdditionalFields(sb, fields);
             sb.DecreaseIndent();
         }
 

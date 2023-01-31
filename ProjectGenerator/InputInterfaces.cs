@@ -29,6 +29,7 @@ public interface IUserSetting
     public string Name { get; }
 
     [PrimaryKey]
+    [ControllerFromHeader("Authorization")]
     public string UserId { get; }
     public string Value { get; }
 }

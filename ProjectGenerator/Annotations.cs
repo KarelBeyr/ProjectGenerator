@@ -18,3 +18,11 @@ public class CommentSummaryAttribute : System.Attribute
         Text = text;
     }
 }
+public class ControllerFromHeaderAttribute : System.Attribute
+{
+    public string HeaderName { get; set; }
+    public ControllerFromHeaderAttribute(string headerName)
+    {
+        HeaderName = headerName;
+    }
+}

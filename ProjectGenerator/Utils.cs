@@ -103,26 +103,34 @@ namespace ProjectGenerator
             return type.CustomAttributes.Any(e => e.AttributeType == attrType);
         }
 
+        public static string ControllerFromHeaderName(this PropertyInfo pi)
+        {
+            var attrs = (ControllerFromHeaderAttribute[])pi.GetCustomAttributes(typeof(ControllerFromHeaderAttribute), false);
+            if (attrs.Count() > 0)
+            {
+                return attrs[0].HeaderName;
+            }
+            return null;
+        }
+
         public static string CommentSummary(this PropertyInfo pi)
         {
-            string commentSummary = null;
             var attrs = (CommentSummaryAttribute[])pi.GetCustomAttributes(typeof(CommentSummaryAttribute), false);
             if (attrs.Count() > 0)
             {
-                commentSummary = attrs[0].Text;
+                return attrs[0].Text;
             }
-            return commentSummary;
+            return null;
         }
 
         public static string CommentSummary(this Type type)
         {
-            string commentSummary = null;
             var attrs = (CommentSummaryAttribute[])type.GetCustomAttributes(typeof(CommentSummaryAttribute), false);
             if (attrs.Count() > 0)
             {
-                commentSummary = attrs[0].Text;
+                return attrs[0].Text;
             }
-            return commentSummary;
+            return null;
         }
     }
 }
