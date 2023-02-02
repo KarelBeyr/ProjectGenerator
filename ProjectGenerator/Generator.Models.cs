@@ -7,12 +7,12 @@ public class ModelsGenerator : GeneratorBase
     //generates models for controllers that come from REST API
     //create, update, delete
 
-    public void Generate(DataModel dataModel)
+    public void Generate(DataModel dm)
     {
         var sb = new IndentingStringBuilder();
-        sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Models;");
+        sb.AppendLine($"namespace {dm.OutputNamespace}.Models;");
         sb.AppendLine();
-        foreach (var cls in dataModel.Classes.Values.Where(e => e.IsModel))
+        foreach (var cls in dm.Classes.Values.Where(e => e.IsModel))
         {
             GenerateXmlCommentSummary(cls, sb);
             sb.AppendLine($"public partial class {cls.Name}Model");
@@ -24,9 +24,9 @@ public class ModelsGenerator : GeneratorBase
             sb.AppendLine($"public partial class Update{cls.Name}Model");
             GenerateFields(cls.Fields, sb, "updateModel");
         }
-        Directory.CreateDirectory($"{Program.BasePath}Controllers");
+        Directory.CreateDirectory($"{dm.BasePath}Controllers");
 
-        File.WriteAllText($"{Program.BasePath}Controllers\\Models.g.cs", sb.ToString());
+        File.WriteAllText($"{dm.BasePath}Controllers\\Models.g.cs", sb.ToString());
     }
 
     public override bool ShouldGenerateField(Field field, string action)

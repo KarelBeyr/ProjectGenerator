@@ -7,9 +7,9 @@ public class RepositoriesGenerator : GeneratorBase
 {
     //generates repositories
 
-    public void Generate(DataModel dataModel)
+    public void Generate(DataModel dm)
     {
-        foreach (var cls in dataModel.Classes.Values.Where(e => e.IsModel))
+        foreach (var cls in dm.Classes.Values.Where(e => e.IsModel))
         {
             var serviceName = $"{cls.Name}Service";
             var repositoryName = $"_{Utils.LowerCaseFirst(cls.Name)}Repository";
@@ -18,9 +18,9 @@ public class RepositoriesGenerator : GeneratorBase
             var sb = new IndentingStringBuilder();
 
             sb.AppendLine($"using Microsoft.EntityFrameworkCore;");
-            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Entities;");
+            sb.AppendLine($"using {dm.OutputNamespace}.Entities;");
             sb.AppendLine();
-            sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Repositories;");
+            sb.AppendLine($"namespace {dm.OutputNamespace}.Repositories;");
             sb.AppendLine();
 
             sb.AppendLine($"public class {cls.Name}Repository: I{cls.Name}Repository");
@@ -62,13 +62,13 @@ public class RepositoriesGenerator : GeneratorBase
             sb.AppendLine();
 
             sb.DecreaseIndent();
-            Directory.CreateDirectory($"{Program.BasePath}Repositories\\Interfaces");
-            File.WriteAllText($"{Program.BasePath}Repositories\\{cls.Name}Repository.g.cs", sb.ToString());
+            Directory.CreateDirectory($"{dm.BasePath}Repositories\\Interfaces");
+            File.WriteAllText($"{dm.BasePath}Repositories\\{cls.Name}Repository.g.cs", sb.ToString());
 
             sb = new IndentingStringBuilder();
-            sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Entities;");
+            sb.AppendLine($"using {dm.OutputNamespace}.Entities;");
             sb.AppendLine();
-            sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Repositories;");
+            sb.AppendLine($"namespace {dm.OutputNamespace}.Repositories;");
             sb.AppendLine();
             sb.AppendLine($"public interface I{cls.Name}Repository");
             sb.IncreaseIndent();
@@ -77,7 +77,7 @@ public class RepositoriesGenerator : GeneratorBase
             sb.AppendLine($"void Save({cls.Name} entity);");
             sb.AppendLine($"void Delete({cls.Name} entity);");
             sb.DecreaseIndent();
-            File.WriteAllText($"{Program.BasePath}Repositories\\Interfaces\\I{cls.Name}Repository.g.cs", sb.ToString());
+            File.WriteAllText($"{dm.BasePath}Repositories\\Interfaces\\I{cls.Name}Repository.g.cs", sb.ToString());
         }
     }
 

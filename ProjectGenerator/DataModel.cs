@@ -16,10 +16,18 @@ namespace ProjectGenerator
         public Dictionary<string, Class> Classes { get; set; }
         public Dictionary<string, Iface> Interfaces { get; set; }
 
-        public DataModel()
+        public string BasePath;
+        public string OutputNamespace;
+        public string DbSchema;
+
+        public DataModel(string basePath, string outputNamespace, string dbSchema)
         {
             Classes = new Dictionary<string, Class>();
             Interfaces = new Dictionary<string, Iface>();
+
+            BasePath = basePath;
+            OutputNamespace = outputNamespace;
+            DbSchema = dbSchema;
         }
 
         public Iface AddInterface(Type type)

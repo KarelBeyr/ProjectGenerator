@@ -6,24 +6,24 @@ public class DbContextGenerator : GeneratorBase
 {
     //generates {DbSchema}DbContext.cs
 
-    public void Generate(DataModel dataModel)
+    public void Generate(DataModel dm)
     {
         var sb = new IndentingStringBuilder();
         sb.AppendLine($"using Microsoft.EntityFrameworkCore;");
-        sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Entities;");
+        sb.AppendLine($"using {dm.OutputNamespace}.Entities;");
         sb.AppendLine();
-        sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}s;");
+        sb.AppendLine($"namespace {dm.OutputNamespace}s;");
         sb.AppendLine();
-        sb.AppendLine($"public class {Program.DbSchema}DbContext : DbContext");
+        sb.AppendLine($"public class {dm.DbSchema}DbContext : DbContext");
         sb.IncreaseIndent();
-        sb.AppendLine($"public const string Schema = \"{Program.DbSchema}\";");
+        sb.AppendLine($"public const string Schema = \"{dm.DbSchema}\";");
         sb.AppendLine();
         sb.AppendLine($"protected override void OnModelCreating(ModelBuilder modelBuilder)");
         sb.IncreaseIndent();
         sb.AppendLine("modelBuilder.HasDefaultSchema(Schema);");
         sb.AppendLine();
         
-        foreach (var cls in dataModel.Classes.Values.Where(e => e.IsDbEntity))
+        foreach (var cls in dm.Classes.Values.Where(e => e.IsDbEntity))
         {
             sb.AppendLine($"modelBuilder.Entity<{cls.Name}>()");
             if (cls.PrimaryKeyFields().Count() == 1)
@@ -38,12 +38,12 @@ public class DbContextGenerator : GeneratorBase
         }
         sb.DecreaseIndent();
         sb.AppendLine();
-        foreach (var cls in dataModel.Classes.Values.Where(e => e.IsDbEntity))
+        foreach (var cls in dm.Classes.Values.Where(e => e.IsDbEntity))
         {
             sb.AppendLine($"public DbSet<{cls.Name}> {cls.Name}s => Set<{cls.Name}>();");   //TODO pluralizer
         }
         sb.DecreaseIndent();
 
-        File.WriteAllText($"{Program.BasePath}{Program.DbSchema}DbContext.g.cs", sb.ToString());
+        File.WriteAllText($"{dm.BasePath}{dm.DbSchema}DbContext.g.cs", sb.ToString());
     }
 }

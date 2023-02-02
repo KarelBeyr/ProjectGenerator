@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics.Metrics;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace ProjectGenerator;
 
@@ -10,19 +11,19 @@ public class Program
     public static void Main()
     {
         var prog = new Program();
-        prog.Run();
+        prog.Run(
+        //TODO1: Update file InputInterfaces.cs
+        //TODO2: Set those constants
+            basePath: @"c:\projects\GeneratedProject\GeneratedProject\", 
+            outputNamespace: "ConfigProvider", 
+            dbSchema: "Conf", 
+            sourceNamespace: "ProjectGenerator.InputInterfaces");
+        //TODO3: Run and 🙏 
     }
 
-    //TODO1: Update file InputInterfaces.cs
-    //TODO2: Set those constants
-    public static string BasePath = @"c:\projects\GeneratedProject\GeneratedProject\";
-    public static string GeneratedProjectNamespace = "UserSettings";
-    public static string DbSchema = "SecNG";
-    //TODO3: Run and 🙏 
-
-    public void Run()
+    public void Run(string basePath, string outputNamespace, string dbSchema, string sourceNamespace)
     {
-        var dataModel = CreateDataModel();
+        var dataModel = CreateDataModel(basePath, outputNamespace, dbSchema, sourceNamespace);
 
         new EntitiesGenerator().Generate(dataModel);
         new InterfacesGenerator().Generate(dataModel);
@@ -34,11 +35,16 @@ public class Program
         new DbContextGenerator().Generate(dataModel);
     }
 
-    DataModel CreateDataModel()
+    DataModel CreateDataModel(string basePath, string outputNamespace, string dbSchema, string sourceNamespace)
     {
-        var dataModel = new DataModel();
-        var allTypes = Assembly.GetExecutingAssembly().GetTypes()
-          .Where(t => String.Equals(t.Namespace, "ProjectGenerator.InputInterfaces", StringComparison.Ordinal))
+        var dataModel = new DataModel(basePath, outputNamespace, dbSchema);
+        //var allTypes = Assembly.GetExecutingAssembly().GetTypes()
+        //  .Where(t => String.Equals(t.Namespace, sourceNamespace, StringComparison.Ordinal))
+        //  .ToArray();
+
+        var allTypes = AppDomain.CurrentDomain.GetAssemblies().
+           SingleOrDefault(assembly => assembly.GetName().Name == sourceNamespace).GetTypes()
+          .Where(t => String.Equals(t.Namespace, sourceNamespace, StringComparison.Ordinal))
           .ToArray();
 
         foreach (var type in allTypes)
@@ -47,10 +53,10 @@ public class Program
             {
                 dataModel.AddClass(type);
             }
-            else
-            {
-                dataModel.AddInterface(type);
-            }
+            //else
+            //{
+            //    dataModel.AddInterface(type);
+            //}
         }
         return dataModel;
     }

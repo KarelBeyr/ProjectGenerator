@@ -7,14 +7,14 @@ public class CommandsGenerator : GeneratorBase
     //generates commands for service layer
     //create, update, delete
 
-    public void Generate(DataModel dataModel)
+    public void Generate(DataModel dm)
     {
         var sb = new IndentingStringBuilder();
-        sb.AppendLine($"using {Program.GeneratedProjectNamespace}.Models;");    //to potentially reuse base models. Only some generated project will need this using, we can add some conditional logic later.
+        sb.AppendLine($"using {dm.OutputNamespace}.Models;");    //to potentially reuse base models. Only some generated project will need this using, we can add some conditional logic later.
         sb.AppendLine();
-        sb.AppendLine($"namespace {Program.GeneratedProjectNamespace}.Commands;");
+        sb.AppendLine($"namespace {dm.OutputNamespace}.Commands;");
         sb.AppendLine();
-        foreach (var cls in dataModel.Classes.Values.Where(e => e.IsModel))
+        foreach (var cls in dm.Classes.Values.Where(e => e.IsModel))
         {
             sb.AppendLine($"public partial class Create{cls.Name}Command");
             GenerateFields(cls.Fields, sb, "createModel", CommandCreateFields);
@@ -25,8 +25,8 @@ public class CommandsGenerator : GeneratorBase
             sb.AppendLine($"public partial class Delete{cls.Name}Command");
             GenerateFields(cls.Fields, sb, "deleteModel");
         }
-        Directory.CreateDirectory($"{Program.BasePath}Services");
-        File.WriteAllText($"{Program.BasePath}Services\\Commands.g.cs", sb.ToString());
+        Directory.CreateDirectory($"{dm.BasePath}Services");
+        File.WriteAllText($"{dm.BasePath}Services\\Commands.g.cs", sb.ToString());
     }
 
     void CommandCreateFields(IndentingStringBuilder sb, IEnumerable<Field> fields)
