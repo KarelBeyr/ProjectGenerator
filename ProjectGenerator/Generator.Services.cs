@@ -50,7 +50,7 @@ public class ServicesGenerator : GeneratorBase
             sb.AppendLine($"if (entity == null) throw new NotFoundException(\"{cls.Name} with given name not found\");");
             sb.AppendLine($"var model = new {cls.Name}Model");
             sb.IncreaseIndent();
-            foreach (var field in cls.Fields.Where(e => !e.IsPrimaryKey && !e.IsOnlyInDb))
+            foreach (var field in cls.Fields.Where(e => !e.IsOnlyInDb))
             {
                 sb.AppendLine($"{field.Name} = entity.{field.Name},");
             }

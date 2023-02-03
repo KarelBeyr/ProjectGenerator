@@ -53,6 +53,7 @@ public class Program
             {
                 dataModel.AddClass(type);
             }
+            //TODO if we miss some interfaces, we can either annotate them, or change the namespaces and then add everything. But if we change namespace, tests don't see it for some reason. So perhaps keep it like that and hope they will get transitively loaded
             //else
             //{
             //    dataModel.AddInterface(type);

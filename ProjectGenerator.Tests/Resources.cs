@@ -53,5 +53,21 @@ namespace ProjectGenerator.Tests
         return CreatedAtAction(nameof(Get), new { Name = id }, id);
     }
 ";
+
+        public static string ConfigurationServiceGet = @"    async Task<ConfigurationModel> IConfigurationService.Get(string key)
+    {
+        var entity = await _configurationRepository.Get(key);
+        if (entity == null) throw new NotFoundException(""Configuration with given name not found"");
+        var model = new ConfigurationModel
+        {
+            Key = entity.Key,
+            ServiceName = entity.ServiceName,
+            Value = entity.Value,
+            Encrypted = entity.Encrypted,
+            AuditCorrelationId = entity.AuditCorrelationId,
+        };
+        return model;
+    }
+";
     }
 }

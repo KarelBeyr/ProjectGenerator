@@ -19,6 +19,10 @@ namespace ProjectGenerator.Tests
             var method = GetTextChunk($"{dir}Controllers\\ConfigurationController.g.cs", "    /// Creates new Configuration", -1);
             var expected = Resources.ConfigurationControllerCreate;
             Assert.AreEqual(expected, method);
+
+            method = GetTextChunk($"{dir}Services\\ConfigurationService.g.cs", @"    async Task<ConfigurationModel> IConfigurationService.Get(string key)", 0);
+            expected = Resources.ConfigurationServiceGet;
+            Assert.AreEqual(expected, method);
         }
 
         [Test]
