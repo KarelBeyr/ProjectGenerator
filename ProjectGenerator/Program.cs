@@ -38,14 +38,9 @@ public class Program
     DataModel CreateDataModel(string basePath, string outputNamespace, string dbSchema, string sourceNamespace)
     {
         var dataModel = new DataModel(basePath, outputNamespace, dbSchema);
-        //var allTypes = Assembly.GetExecutingAssembly().GetTypes()
-        //  .Where(t => String.Equals(t.Namespace, sourceNamespace, StringComparison.Ordinal))
-        //  .ToArray();
-
-        var allTypes = AppDomain.CurrentDomain.GetAssemblies().
-           SingleOrDefault(assembly => assembly.GetName().Name == sourceNamespace).GetTypes()
-          .Where(t => String.Equals(t.Namespace, sourceNamespace, StringComparison.Ordinal))
-          .ToArray();
+        var allTypes = AppDomain.CurrentDomain.GetAssemblies()
+           .SelectMany(e => e.GetTypes())
+           .Where(t => String.Equals(t.Namespace, sourceNamespace, StringComparison.Ordinal));
 
         foreach (var type in allTypes)
         {

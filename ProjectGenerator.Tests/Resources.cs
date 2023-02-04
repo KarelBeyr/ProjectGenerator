@@ -8,6 +8,25 @@ namespace ProjectGenerator.Tests
 {
     public static class Resources
     {
+        public static string SimpleThingControllerCreate = @"    /// <summary>
+    /// Creates new SimpleThing
+    /// </summary>
+    /// <param name=""request"">Model describing the new SimpleThing</param>
+    /// <returns>New Id assigned to new SimpleThing</returns>
+    /// <response code=""201"">New Id assigned to new SimpleThing</response>
+    /// <response code=""400"">If request is wrong</response>
+    [HttpPut]
+    [ProducesResponseType(typeof(SimpleThing), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<int>> Create([FromBody] CreateSimpleThingModel request)
+    {
+        var id = await _simpleThingService.Create(new CreateSimpleThingCommand
+        {
+            Value = request.Value,
+        });
+        return CreatedAtAction(nameof(Get), new { id = id }, new { id = id });
+    }";
+
         public static string ConfigurationControllerCreate = @"    /// <summary>
     /// Creates new Configuration
     /// </summary>
@@ -20,7 +39,7 @@ namespace ProjectGenerator.Tests
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<string>> Create([FromBody] CreateConfigurationModel request)
     {
-        var id = await _configurationService.Create(new CreateConfigurationCommand
+        await _configurationService.Create(new CreateConfigurationCommand
         {
             Key = request.Key,
             ServiceName = request.ServiceName,
@@ -28,9 +47,25 @@ namespace ProjectGenerator.Tests
             Encrypted = request.Encrypted,
             AuditCorrelationId = Request.Headers[""AuditCorrelationId""],
         });
-        return CreatedAtAction(nameof(Get), new { Key = id }, id);
-    }
-";
+        return CreatedAtAction(nameof(Get), new { key = request.Key, serviceName = request.ServiceName }, new { key = request.Key, serviceName = request.ServiceName });
+    }";
+
+        public static string ConfigurationControllerGet = @"    /// <summary>
+    /// Gets Configuration
+    /// </summary>
+    /// <param name=""key"">Key of Configuration to get details</param>
+    /// <param name=""serviceName"">ServiceName of Configuration to get details</param>
+    /// <returns>Detail of given Configuration</returns>
+    /// <response code=""200"">Detail of given Configuration</response>
+    /// <response code=""404"">If invalid <paramref name=""Key""/> was passed.</response>
+    [HttpGet(""{Key}"")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Configuration>> Get([FromRoute] string key, [FromQuery] string serviceName)
+    {
+        var res = await _configurationService.Get(key, serviceName);
+        return Ok(res);
+    }";
 
         public static string UserSettingControllerCreate = @"    /// <summary>
     /// Creates new UserSetting
@@ -44,15 +79,30 @@ namespace ProjectGenerator.Tests
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<string>> Create([FromBody] CreateUserSettingModel request)
     {
-        var id = await _userSettingService.Create(new CreateUserSettingCommand
+        await _userSettingService.Create(new CreateUserSettingCommand
         {
             Name = request.Name,
             Value = request.Value,
             Authorization = Request.Headers[""Authorization""],
         });
-        return CreatedAtAction(nameof(Get), new { Name = id }, id);
-    }
-";
+        return CreatedAtAction(nameof(Get), new { name = request.Name }, new { name = request.Name });
+    }";
+
+        public static string UserSettingControllerGet = @"    /// <summary>
+    /// Gets UserSetting
+    /// </summary>
+    /// <param name=""name"">Name of UserSetting to get details</param>
+    /// <returns>Detail of given UserSetting</returns>
+    /// <response code=""200"">Detail of given UserSetting</response>
+    /// <response code=""404"">If invalid <paramref name=""Name""/> was passed.</response>
+    [HttpGet(""{Name}"")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UserSetting>> Get([FromRoute] string name)
+    {
+        var res = await _userSettingService.Get(name, Request.Headers[""Authorization""]);
+        return Ok(res);
+    }";
 
         public static string ConfigurationServiceGet = @"    async Task<ConfigurationModel> IConfigurationService.Get(string key)
     {
@@ -64,10 +114,40 @@ namespace ProjectGenerator.Tests
             ServiceName = entity.ServiceName,
             Value = entity.Value,
             Encrypted = entity.Encrypted,
-            AuditCorrelationId = entity.AuditCorrelationId,
         };
         return model;
-    }
-";
+    }";
+
+        public static string ConfigurationServiceCreate = @"    async Task IConfigurationService.Create(CreateConfigurationCommand command)
+    {
+        //TODO EnsurePermissionAndAccess(...) 
+        var found = await _configurationRepository.Get(command.ServiceName, command.Key);
+        if (found != null) throw new InvalidStateException(""Configuration with given primaryKeys already exists"");
+        var entity = new Configuration
+        {
+            ServiceName = command.ServiceName,
+            Key = command.Key,
+            Value = command.Value,
+            Encrypted = command.Encrypted,
+        };
+        _configurationRepository.Save(entity);
+        await _unitOfWork.SaveChanges();
+    }";
+
+        public static string Models_UserSettingModel = @"public partial class UserSettingModel
+{
+    public string Name { get; set; }
+    public string UserId { get; set; }
+    public string Value { get; set; }
+}";
+
+        public static string Models_ConfigurationModel = @"public partial class ConfigurationModel
+{
+    public string ServiceName { get; set; }
+    public string Key { get; set; }
+    public string Value { get; set; }
+    public bool Encrypted { get; set; }
+}";
+
     }
 }
