@@ -13,10 +13,10 @@ public interface IUserSettingDefault
 [DbEntity, Model]
 public interface IUserSetting
 {
-    [PrimaryKey]
+    [PrimaryKey(IsAutogonerated = false)]
     public string Name { get; }
 
-    [PrimaryKey]
+    [PrimaryKey(IsAutogonerated = false)]
     [ControllerFromHeader("Authorization")]
     public string UserId { get; }
     public string Value { get; }

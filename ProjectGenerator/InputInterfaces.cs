@@ -17,12 +17,11 @@ namespace ProjectGenerator.InputInterfaces;
 [DbEntity, Model]
 public interface IConfiguration
 {
-    [PrimaryKey]
+    [PrimaryKey(IsAutogonerated = false)]
     //[CommentSummary("Configuration key")]
     public string Key { get; }
 
-    [PrimaryKey]
-    [Optional]
+    [PrimaryKey(IsAutogonerated = false, IsOptional = true)]
     //[CommentSummary("Name of service. Optional. Null means shared configuration for all services.")]
     public string ServiceName { get; }
 
@@ -48,10 +47,10 @@ public interface IConfiguration
 [DbEntity, Model]
 public interface IUserSetting
 {
-    [PrimaryKey]
+    [PrimaryKey(IsAutogonerated = false)]
     public string Name { get; }
 
-    [PrimaryKey]
+    [PrimaryKey(IsAutogonerated = false)]
     [ControllerFromHeader("Authorization")]
     public string UserId { get; }
     public string Value { get; }

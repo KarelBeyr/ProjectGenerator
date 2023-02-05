@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -109,6 +110,16 @@ namespace ProjectGenerator
             if (attrs.Count() > 0)
             {
                 return attrs[0].HeaderName;
+            }
+            return null;
+        }
+
+        public static PrimaryKey PrimaryKey(this PropertyInfo pi)
+        {
+            var attrs = (PrimaryKeyAttribute[])pi.GetCustomAttributes(typeof(PrimaryKeyAttribute), false);
+            if (attrs.Count() > 0)
+            {
+                return new PrimaryKey(attrs[0].IsAutogonerated, attrs[0].IsOptional);
             }
             return null;
         }

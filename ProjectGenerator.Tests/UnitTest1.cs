@@ -7,10 +7,10 @@ namespace ProjectGenerator.Tests
     {
         [Test]
         [TestCase("Controllers\\ConfigurationController.g.cs", "    /// Creates new Configuration", -1, Resources.ConfigurationControllerCreate)]
-        [TestCase("Controllers\\ConfigurationController.g.cs", "    [HttpGet(\"{Key}\")]", -8, Resources.ConfigurationControllerGet)]
+        [TestCase("Controllers\\ConfigurationController.g.cs", "    [HttpGet(\"{key}\")]", -8, Resources.ConfigurationControllerGet)]
         [TestCase("Controllers\\ConfigurationController.g.cs", "    /// Updates Configuration", -1, Resources.ConfigurationControllerUpdate)]
         [TestCase("Controllers\\ConfigurationController.g.cs", "    /// Deletes Configuration", -1, Resources.ConfigurationControllerDelete)]
-        [TestCase("Services\\ConfigurationService.g.cs", "    async Task<ConfigurationModel> IConfigurationService.Get(string key)", 0, Resources.ConfigurationServiceGet)]
+        [TestCase("Services\\ConfigurationService.g.cs", "    async Task<ConfigurationModel> IConfigurationService.Get(string key, string serviceName)", 0, Resources.ConfigurationServiceGet)]
         [TestCase("Controllers\\Models.g.cs", "public partial class UserSettingModel", 0, Resources.Models_UserSettingModel)]
         public void Test_ConfigurationProvider(string path, string search, int previousLines, string expected)
         {

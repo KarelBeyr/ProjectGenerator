@@ -28,7 +28,7 @@ public class DbContextGenerator : GeneratorBase
             sb.AppendLine($"modelBuilder.Entity<{cls.Name}>()");
             if (cls.PrimaryKeyFields().Count() == 1)
             {
-                sb.AppendLine($"    .HasKey(e => e.{cls.PrimaryKeyField().Name});");
+                sb.AppendLine($"    .HasKey(e => e.{cls.PrimaryKeyFields().First().Name});");
             } else
             {
                 var keyString = string.Join(", ", cls.PrimaryKeyFields().Select(e => $"e.{e.Name}"));

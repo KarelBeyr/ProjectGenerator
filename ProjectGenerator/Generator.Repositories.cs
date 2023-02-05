@@ -13,7 +13,9 @@ public class RepositoriesGenerator : GeneratorBase
         {
             var serviceName = $"{cls.Name}Service";
             var repositoryName = $"_{Utils.LowerCaseFirst(cls.Name)}Repository";
-            var pkField = cls.PrimaryKeyField();
+            var requiredPrimaryKeys = cls.PrimaryKeyFields().Where(e => e.PrimaryKey.IsOptional == false);
+
+            var pkField = cls.PrimaryKeyFields().First();
             var pkFieldVarName = Utils.LowerCaseFirst(pkField.Name);
             var sb = new IndentingStringBuilder();
 
@@ -34,16 +36,28 @@ public class RepositoriesGenerator : GeneratorBase
             sb.AppendLine();
 
             ///////////////GET
-            sb.AppendLine($"public async Task<{cls.Name}> Get({pkField.TypeName} {pkFieldVarName})");
+            var paramNames = new List<string>();
+            paramNames.AddRange(cls.PrimaryKeyFields().Where(e => e.ControllerFromHeader == null).Select(e => $"{e.TypeName} {Utils.LowerCaseFirst(e.Name)}"));
+            paramNames.AddRange(cls.PrimaryKeyFields().Where(e => e.ControllerFromHeader != null).Select(e => $"{e.TypeName} {Utils.LowerCaseFirst(e.Name)}"));
+            var inputParameters = string.Join(", ", paramNames);
+
+            sb.AppendLine($"public async Task<{cls.Name}> Get({inputParameters})");
             sb.IncreaseIndent();
-            sb.AppendLine($"return await DbSet.SingleOrDefaultAsync(e => e.{pkField.Name} == {pkFieldVarName});");
+
+            paramNames = new List<string>();
+            paramNames.AddRange(cls.PrimaryKeyFields().Where(e => e.ControllerFromHeader == null).Select(e => $"e.{e.Name} == {Utils.LowerCaseFirst(e.Name)}"));
+            paramNames.AddRange(cls.PrimaryKeyFields().Where(e => e.ControllerFromHeader != null).Select(e => $"e.{e.Name} == {Utils.LowerCaseFirst(e.Name)}"));
+            var comparisonParameters = string.Join(" && ", paramNames);
+
+
+            sb.AppendLine($"return await DbSet.SingleOrDefaultAsync(e => {comparisonParameters});");
             sb.DecreaseIndent();
             sb.AppendLine();
 
             ///////////////GET for tracking
-            sb.AppendLine($"public async Task<{cls.Name}> GetForUpdate({pkField.TypeName} {pkFieldVarName})");
+            sb.AppendLine($"public async Task<{cls.Name}> GetForUpdate({inputParameters})");
             sb.IncreaseIndent();
-            sb.AppendLine($"return await DbSet.AsTracking().SingleOrDefaultAsync(e => e.{pkField.Name} == {pkFieldVarName});");
+            sb.AppendLine($"return await DbSet.AsTracking().SingleOrDefaultAsync(e => {comparisonParameters});");
             sb.DecreaseIndent();
             sb.AppendLine();
 
@@ -72,8 +86,8 @@ public class RepositoriesGenerator : GeneratorBase
             sb.AppendLine();
             sb.AppendLine($"public interface I{cls.Name}Repository");
             sb.IncreaseIndent();
-            sb.AppendLine($"Task<{cls.Name}> Get({pkField.TypeName} {pkFieldVarName});");
-            sb.AppendLine($"Task<{cls.Name}> GetForUpdate({pkField.TypeName} {pkFieldVarName});");
+            sb.AppendLine($"Task<{cls.Name}> Get({inputParameters});");
+            sb.AppendLine($"Task<{cls.Name}> GetForUpdate({inputParameters});");
             sb.AppendLine($"void Save({cls.Name} entity);");
             sb.AppendLine($"void Delete({cls.Name} entity);");
             sb.DecreaseIndent();
@@ -84,9 +98,9 @@ public class RepositoriesGenerator : GeneratorBase
     public override bool ShouldGenerateField(Field field, string action)
     {
         if (field.IsOnlyInDb) return false;
-        if (field.IsOnlyCreate && action == "updateModel") return false;
-        if (field.IsPrimaryKey && action == "createModel") return false;
-        if (field.IsPrimaryKey && action == "updateModel") return false;
+        if (field.IsReadOnly && action == "updateModel") return false;
+        if (field.IsPrimaryKey() && action == "createModel") return false;
+        if (field.IsPrimaryKey() && action == "updateModel") return false;
         return true;
     }
 }
