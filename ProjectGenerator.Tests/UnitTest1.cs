@@ -24,6 +24,14 @@ namespace ProjectGenerator.Tests
             expected = Resources.ConfigurationControllerGet;
             Assert.That(method, Is.EqualTo(expected));
 
+            method = GetTextChunk($"{dir}Controllers\\ConfigurationController.g.cs", "    /// Updates Configuration", -1);
+            expected = Resources.ConfigurationControllerUpdate;
+            Assert.That(method, Is.EqualTo(expected));
+
+            method = GetTextChunk($"{dir}Controllers\\ConfigurationController.g.cs", "    /// Deletes Configuration", -1);
+            expected = Resources.ConfigurationControllerDelete;
+            Assert.That(method, Is.EqualTo(expected));
+
             method = GetTextChunk($"{dir}Services\\ConfigurationService.g.cs", @"    async Task<ConfigurationModel> IConfigurationService.Get(string key)", 0);
             expected = Resources.ConfigurationServiceGet;
             Assert.That(method, Is.EqualTo(expected));
@@ -66,6 +74,10 @@ namespace ProjectGenerator.Tests
 
             var method = GetTextChunk($"{dir}Controllers\\SimpleThingController.g.cs", "    /// Creates new SimpleThing", -1);
             var expected = Resources.SimpleThingControllerCreate;
+            Assert.That(method, Is.EqualTo(expected));
+
+            method = GetTextChunk($"{dir}Controllers\\SimpleThingController.g.cs", "    /// Gets SimpleThing", -1);
+            expected = Resources.SimpleThingControllerGet;
             Assert.That(method, Is.EqualTo(expected));
         }
         string GetTextChunk(string filename, string startLine, int addToStartIndex)

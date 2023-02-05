@@ -49,7 +49,7 @@ public class ControllersGenerator : GeneratorBase
             GenerateXmlComment("response code=\"201\"", $"New {pkField.Name} assigned to new {cls.Name}",sb, true);
             GenerateXmlComment("response code=\"400\"", $"If request is wrong", sb, true);
             sb.AppendLine($"[HttpPut]");
-            sb.AppendLine($"[ProducesResponseType(typeof({cls.Name}), StatusCodes.Status200OK)]");
+            sb.AppendLine($"[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]");
             sb.AppendLine($"[ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]");
             sb.AppendLine($"public async Task<ActionResult<{pkField.TypeName}>> Create([FromBody] Create{cls.Name}Model request)");
             sb.IncreaseIndent();
@@ -96,7 +96,7 @@ public class ControllersGenerator : GeneratorBase
             sb.AppendLine($"[ProducesResponseType(typeof({pkField.TypeName}), StatusCodes.Status201Created)]");
             sb.AppendLine($"[ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]");
             var controllerEndpointParameters = string.Join(", ", cls.PrimaryKeyFields().Where(e => e.ControllerFromHeader == null).Select(e => $"[{(e.IsOptional ? "FromQuery" : "FromRoute")}] {e.TypeName} {Utils.LowerCaseFirst(e.Name)}"));
-            sb.AppendLine($"public async Task<ActionResult<{cls.Name}>> Get({controllerEndpointParameters})");
+            sb.AppendLine($"public async Task<ActionResult<{cls.Name}Model>> Get({controllerEndpointParameters})");
             sb.IncreaseIndent();
             var paramNames = new List<string>();
             paramNames.AddRange(cls.PrimaryKeyFields().Where(e => e.ControllerFromHeader == null).Select(e => Utils.LowerCaseFirst(e.Name)));
@@ -123,6 +123,10 @@ public class ControllersGenerator : GeneratorBase
             sb.IncreaseIndent();
             sb.AppendLine($"await {serviceName}.Update(new Update{cls.Name}Command");
             sb.IncreaseIndent();
+            foreach (var field in cls.PrimaryKeyFields().Where(e => e.ControllerFromHeader == null))
+            {
+                sb.AppendLine($"{field.Name} = {Utils.LowerCaseFirst(field.Name)},");
+            }
             foreach (var field in cls.Fields.Where(e => !e.IsPrimaryKey && !e.IsOnlyInDb && !e.IsOnlyCreate))
             {
                 sb.AppendLine($"{field.Name} = request.{field.Name},");
@@ -145,7 +149,10 @@ public class ControllersGenerator : GeneratorBase
             sb.IncreaseIndent();
             sb.AppendLine($"await {serviceName}.Delete(new Delete{cls.Name}Command");
             sb.IncreaseIndent();
-            sb.AppendLine($"{pkField.Name} = {pkFieldVarName}");
+            foreach (var field in cls.PrimaryKeyFields().Where(e => e.ControllerFromHeader == null))
+            {
+                sb.AppendLine($"{field.Name} = {Utils.LowerCaseFirst(field.Name)},");
+            }
             sb.DecreaseIndent(");");
             sb.AppendLine($"return NoContent();");
             sb.DecreaseIndent();

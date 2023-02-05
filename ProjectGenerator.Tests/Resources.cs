@@ -16,7 +16,7 @@ namespace ProjectGenerator.Tests
     /// <response code=""201"">New Id assigned to new SimpleThing</response>
     /// <response code=""400"">If request is wrong</response>
     [HttpPut]
-    [ProducesResponseType(typeof(SimpleThing), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Create([FromBody] CreateSimpleThingModel request)
     {
@@ -27,6 +27,22 @@ namespace ProjectGenerator.Tests
         return CreatedAtAction(nameof(Get), new { id = id }, new { id = id });
     }";
 
+        public static string SimpleThingControllerGet = @"    /// <summary>
+    /// Gets SimpleThing
+    /// </summary>
+    /// <param name=""id"">Id of SimpleThing to get details</param>
+    /// <returns>Detail of given SimpleThing</returns>
+    /// <response code=""200"">Detail of given SimpleThing</response>
+    /// <response code=""404"">If invalid <paramref name=""Id""/> was passed.</response>
+    [HttpGet(""{Id}"")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<SimpleThingModel>> Get([FromRoute] int id)
+    {
+        var res = await _simpleThingService.Get(id);
+        return Ok(res);
+    }";
+
         public static string ConfigurationControllerCreate = @"    /// <summary>
     /// Creates new Configuration
     /// </summary>
@@ -35,7 +51,7 @@ namespace ProjectGenerator.Tests
     /// <response code=""201"">New Key assigned to new Configuration</response>
     /// <response code=""400"">If request is wrong</response>
     [HttpPut]
-    [ProducesResponseType(typeof(Configuration), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<string>> Create([FromBody] CreateConfigurationModel request)
     {
@@ -61,10 +77,50 @@ namespace ProjectGenerator.Tests
     [HttpGet(""{Key}"")]
     [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Configuration>> Get([FromRoute] string key, [FromQuery] string serviceName)
+    public async Task<ActionResult<ConfigurationModel>> Get([FromRoute] string key, [FromQuery] string serviceName)
     {
         var res = await _configurationService.Get(key, serviceName);
         return Ok(res);
+    }";
+
+        public static string ConfigurationControllerUpdate = @"    /// <summary>
+    /// Updates Configuration
+    /// </summary>
+    /// <param name=""key"">Key of Configuration to be updated</param>
+    /// <param name=""serviceName"">ServiceName of Configuration to be updated</param>
+    /// <param name=""request"">Complete new state of the Configuration</param>
+    /// <response code=""204"">Update was successful.</response>
+    /// <response code=""404"">If invalid <paramref name=""key""/> was passed.</response>
+    /// <response code=""400"">If update cannot be performed, contains reason why.</response>
+    [HttpPatch(""{key}"")]
+    public async Task<ActionResult> Update([FromRoute] string key, [FromQuery] string serviceName, [FromBody] UpdateConfigurationModel request)
+    {
+        await _configurationService.Update(new UpdateConfigurationCommand
+        {
+            Key = key,
+            ServiceName = serviceName,
+            Value = request.Value,
+            Encrypted = request.Encrypted,
+        });
+        return NoContent();
+    }";
+
+        public static string ConfigurationControllerDelete = @"    /// <summary>
+    /// Deletes Configuration
+    /// </summary>
+    /// <param name=""key"">Key of Configuration to be deleted</param>
+    /// <param name=""serviceName"">ServiceName of Configuration to be deleted</param>
+    /// <response code=""204"">Delete was successful.</response>
+    /// <response code=""404"">If invalid <paramref name=""key""/> was passed.</response>
+    [HttpDelete(""{key}"")]
+    public async Task<ActionResult> Delete([FromRoute] string key, [FromQuery] string serviceName)
+    {
+        await _configurationService.Delete(new DeleteConfigurationCommand
+        {
+            Key = key,
+            ServiceName = serviceName,
+        });
+        return NoContent();
     }";
 
         public static string UserSettingControllerCreate = @"    /// <summary>
@@ -75,7 +131,7 @@ namespace ProjectGenerator.Tests
     /// <response code=""201"">New Name assigned to new UserSetting</response>
     /// <response code=""400"">If request is wrong</response>
     [HttpPut]
-    [ProducesResponseType(typeof(UserSetting), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<string>> Create([FromBody] CreateUserSettingModel request)
     {
@@ -98,7 +154,7 @@ namespace ProjectGenerator.Tests
     [HttpGet(""{Name}"")]
     [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UserSetting>> Get([FromRoute] string name)
+    public async Task<ActionResult<UserSettingModel>> Get([FromRoute] string name)
     {
         var res = await _userSettingService.Get(name, Request.Headers[""Authorization""]);
         return Ok(res);
