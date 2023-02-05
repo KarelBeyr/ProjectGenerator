@@ -8,7 +8,7 @@ namespace ProjectGenerator.Tests
 {
     public static class Resources
     {
-        public static string SimpleThingControllerCreate = @"    /// <summary>
+        public const string SimpleThingControllerCreate = @"    /// <summary>
     /// Creates new SimpleThing
     /// </summary>
     /// <param name=""request"">Model describing the new SimpleThing</param>
@@ -27,7 +27,7 @@ namespace ProjectGenerator.Tests
         return CreatedAtAction(nameof(Get), new { id = id }, new { id = id });
     }";
 
-        public static string SimpleThingControllerGet = @"    /// <summary>
+        public const string SimpleThingControllerGet = @"    /// <summary>
     /// Gets SimpleThing
     /// </summary>
     /// <param name=""id"">Id of SimpleThing to get details</param>
@@ -43,7 +43,7 @@ namespace ProjectGenerator.Tests
         return Ok(res);
     }";
 
-        public static string ConfigurationControllerCreate = @"    /// <summary>
+        public const string ConfigurationControllerCreate = @"    /// <summary>
     /// Creates new Configuration
     /// </summary>
     /// <param name=""request"">Model describing the new Configuration</param>
@@ -66,7 +66,7 @@ namespace ProjectGenerator.Tests
         return CreatedAtAction(nameof(Get), new { key = request.Key, serviceName = request.ServiceName }, new { key = request.Key, serviceName = request.ServiceName });
     }";
 
-        public static string ConfigurationControllerGet = @"    /// <summary>
+        public const string ConfigurationControllerGet = @"    /// <summary>
     /// Gets Configuration
     /// </summary>
     /// <param name=""key"">Key of Configuration to get details</param>
@@ -83,7 +83,7 @@ namespace ProjectGenerator.Tests
         return Ok(res);
     }";
 
-        public static string ConfigurationControllerUpdate = @"    /// <summary>
+        public const string ConfigurationControllerUpdate = @"    /// <summary>
     /// Updates Configuration
     /// </summary>
     /// <param name=""key"">Key of Configuration to be updated</param>
@@ -105,7 +105,7 @@ namespace ProjectGenerator.Tests
         return NoContent();
     }";
 
-        public static string ConfigurationControllerDelete = @"    /// <summary>
+        public const string ConfigurationControllerDelete = @"    /// <summary>
     /// Deletes Configuration
     /// </summary>
     /// <param name=""key"">Key of Configuration to be deleted</param>
@@ -123,7 +123,7 @@ namespace ProjectGenerator.Tests
         return NoContent();
     }";
 
-        public static string UserSettingControllerCreate = @"    /// <summary>
+        public const string UserSettingControllerCreate = @"    /// <summary>
     /// Creates new UserSetting
     /// </summary>
     /// <param name=""request"">Model describing the new UserSetting</param>
@@ -144,7 +144,7 @@ namespace ProjectGenerator.Tests
         return CreatedAtAction(nameof(Get), new { name = request.Name }, new { name = request.Name });
     }";
 
-        public static string UserSettingControllerGet = @"    /// <summary>
+        public const string UserSettingControllerGet = @"    /// <summary>
     /// Gets UserSetting
     /// </summary>
     /// <param name=""name"">Name of UserSetting to get details</param>
@@ -160,7 +160,7 @@ namespace ProjectGenerator.Tests
         return Ok(res);
     }";
 
-        public static string ConfigurationServiceGet = @"    async Task<ConfigurationModel> IConfigurationService.Get(string key)
+        public const string ConfigurationServiceGet = @"    async Task<ConfigurationModel> IConfigurationService.Get(string key)
     {
         var entity = await _configurationRepository.Get(key);
         if (entity == null) throw new NotFoundException(""Configuration with given name not found"");
@@ -174,7 +174,7 @@ namespace ProjectGenerator.Tests
         return model;
     }";
 
-        public static string ConfigurationServiceCreate = @"    async Task IConfigurationService.Create(CreateConfigurationCommand command)
+        public const string ConfigurationServiceCreate = @"    async Task IConfigurationService.Create(CreateConfigurationCommand command)
     {
         //TODO EnsurePermissionAndAccess(...) 
         var found = await _configurationRepository.Get(command.ServiceName, command.Key);
@@ -190,14 +190,14 @@ namespace ProjectGenerator.Tests
         await _unitOfWork.SaveChanges();
     }";
 
-        public static string Models_UserSettingModel = @"public partial class UserSettingModel
+        public const string Models_UserSettingModel = @"public partial class UserSettingModel
 {
     public string Name { get; set; }
     public string UserId { get; set; }
     public string Value { get; set; }
 }";
 
-        public static string Models_ConfigurationModel = @"public partial class ConfigurationModel
+        public const string Models_ConfigurationModel = @"public partial class ConfigurationModel
 {
     public string ServiceName { get; set; }
     public string Key { get; set; }

@@ -6,7 +6,13 @@ namespace ProjectGenerator.Tests
     public class Tests
     {
         [Test]
-        public void Test1()
+        [TestCase("Controllers\\ConfigurationController.g.cs", "    /// Creates new Configuration", -1, Resources.ConfigurationControllerCreate)]
+        [TestCase("Controllers\\ConfigurationController.g.cs", "    [HttpGet(\"{Key}\")]", -8, Resources.ConfigurationControllerGet)]
+        [TestCase("Controllers\\ConfigurationController.g.cs", "    /// Updates Configuration", -1, Resources.ConfigurationControllerUpdate)]
+        [TestCase("Controllers\\ConfigurationController.g.cs", "    /// Deletes Configuration", -1, Resources.ConfigurationControllerDelete)]
+        [TestCase("Services\\ConfigurationService.g.cs", "    async Task<ConfigurationModel> IConfigurationService.Get(string key)", 0, Resources.ConfigurationServiceGet)]
+        [TestCase("Controllers\\Models.g.cs", "public partial class UserSettingModel", 0, Resources.Models_UserSettingModel)]
+        public void Test_ConfigurationProvider(string path, string search, int previousLines, string expected)
         {
             var prog = new ProjectGenerator.Program();
             var dir = @"c:\projects\GeneratedProject\GeneratedProject\";
@@ -16,33 +22,14 @@ namespace ProjectGenerator.Tests
                 dbSchema: "Conf",
                 sourceNamespace: "ProjectGenerator.Tests");
 
-            var method = GetTextChunk($"{dir}Controllers\\ConfigurationController.g.cs", "    /// Creates new Configuration", -1);
-            var expected = Resources.ConfigurationControllerCreate;
-            Assert.That(method, Is.EqualTo(expected));
-
-            method = GetTextChunk($"{dir}Controllers\\ConfigurationController.g.cs", "    [HttpGet(\"{Key}\")]", -8);
-            expected = Resources.ConfigurationControllerGet;
-            Assert.That(method, Is.EqualTo(expected));
-
-            method = GetTextChunk($"{dir}Controllers\\ConfigurationController.g.cs", "    /// Updates Configuration", -1);
-            expected = Resources.ConfigurationControllerUpdate;
-            Assert.That(method, Is.EqualTo(expected));
-
-            method = GetTextChunk($"{dir}Controllers\\ConfigurationController.g.cs", "    /// Deletes Configuration", -1);
-            expected = Resources.ConfigurationControllerDelete;
-            Assert.That(method, Is.EqualTo(expected));
-
-            method = GetTextChunk($"{dir}Services\\ConfigurationService.g.cs", @"    async Task<ConfigurationModel> IConfigurationService.Get(string key)", 0);
-            expected = Resources.ConfigurationServiceGet;
-            Assert.That(method, Is.EqualTo(expected));
-
-            method = GetTextChunk($"{dir}Controllers\\Models.g.cs", @"public partial class UserSettingModel", 0);
-            expected = Resources.Models_UserSettingModel;
+            var method = GetTextChunk($"{dir}{path}", search, previousLines);
             Assert.That(method, Is.EqualTo(expected));
         }
 
         [Test]
-        public void Test2()
+        [TestCase("Controllers\\UserSettingController.g.cs", "    /// Creates new UserSetting", -1, Resources.UserSettingControllerCreate)]
+        [TestCase("Controllers\\UserSettingController.g.cs", "    /// Gets UserSetting", -1, Resources.UserSettingControllerGet)]
+        public void Test_UserSettings(string path, string search, int previousLines, string expected)
         {
             var prog = new ProjectGenerator.Program();
             var dir = @"c:\projects\GeneratedProject\GeneratedProject\";
@@ -52,17 +39,14 @@ namespace ProjectGenerator.Tests
                 dbSchema: "Conf",
                 sourceNamespace: "ProjectGenerator.Tests");
 
-            var method = GetTextChunk($"{dir}Controllers\\UserSettingController.g.cs", "    /// Creates new UserSetting", -1);
-            var expected = Resources.UserSettingControllerCreate;
-            Assert.That(method, Is.EqualTo(expected));
-
-            method = GetTextChunk($"{dir}Controllers\\UserSettingController.g.cs", "    /// Gets UserSetting", -1);
-            expected = Resources.UserSettingControllerGet;
+            var method = GetTextChunk($"{dir}{path}", search, previousLines);
             Assert.That(method, Is.EqualTo(expected));
         }
 
         [Test]
-        public void Test3()
+        [TestCase("Controllers\\SimpleThingController.g.cs", "    /// Creates new SimpleThing", -1, Resources.SimpleThingControllerCreate)]
+        [TestCase("Controllers\\SimpleThingController.g.cs", "    /// Gets SimpleThing", -1, Resources.SimpleThingControllerGet)]
+        public void Test_SimpleThing(string path, string search, int previousLines, string expected)
         {
             var prog = new ProjectGenerator.Program();
             var dir = @"c:\projects\GeneratedProject\GeneratedProject\";
@@ -72,14 +56,10 @@ namespace ProjectGenerator.Tests
                 dbSchema: "Conf",
                 sourceNamespace: "ProjectGenerator.Tests");
 
-            var method = GetTextChunk($"{dir}Controllers\\SimpleThingController.g.cs", "    /// Creates new SimpleThing", -1);
-            var expected = Resources.SimpleThingControllerCreate;
-            Assert.That(method, Is.EqualTo(expected));
-
-            method = GetTextChunk($"{dir}Controllers\\SimpleThingController.g.cs", "    /// Gets SimpleThing", -1);
-            expected = Resources.SimpleThingControllerGet;
+            var method = GetTextChunk($"{dir}{path}", search, previousLines);
             Assert.That(method, Is.EqualTo(expected));
         }
+
         string GetTextChunk(string filename, string startLine, int addToStartIndex)
         {
             var lines = File.ReadAllLines(filename).ToList();
