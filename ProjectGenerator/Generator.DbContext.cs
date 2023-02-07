@@ -12,11 +12,14 @@ public class DbContextGenerator : GeneratorBase
         sb.AppendLine($"using Microsoft.EntityFrameworkCore;");
         sb.AppendLine($"using {dm.OutputNamespace}.Entities;");
         sb.AppendLine();
-        sb.AppendLine($"namespace {dm.OutputNamespace}s;");
+        sb.AppendLine($"namespace {dm.OutputNamespace};");
         sb.AppendLine();
         sb.AppendLine($"public class {dm.DbSchema}DbContext : DbContext");
         sb.IncreaseIndent();
         sb.AppendLine($"public const string Schema = \"{dm.DbSchema}\";");
+        sb.AppendLine($"public {dm.DbSchema}DbContext(DbContextOptions options) : base(options)");
+        sb.IncreaseIndent();
+        sb.DecreaseIndent();
         sb.AppendLine();
         sb.AppendLine($"protected override void OnModelCreating(ModelBuilder modelBuilder)");
         sb.IncreaseIndent();

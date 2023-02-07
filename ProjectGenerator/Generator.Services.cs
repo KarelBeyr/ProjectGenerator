@@ -17,14 +17,13 @@ public class ServicesGenerator : GeneratorBase
             var pkFieldVarName = Utils.LowerCaseFirst(pkField.Name);
             var sb = new IndentingStringBuilder();
 
-            sb.AppendLine($"using {dm.OutputNamespace}.Infrastructure;");
             sb.AppendLine($"using {dm.OutputNamespace}.Repositories;");
             sb.AppendLine($"using {dm.OutputNamespace}.Commands;");
             sb.AppendLine($"using {dm.OutputNamespace}.Interfaces;");
             sb.AppendLine($"using {dm.OutputNamespace}.Entities;");
             sb.AppendLine($"using {dm.OutputNamespace}.Models;");
             sb.AppendLine($"using IOTA.Core.Security;");
-            
+            sb.AppendLine($"using IOTA.Framework.Shared;;");
 
             sb.AppendLine($"namespace {dm.OutputNamespace}.Services;");
             sb.AppendLine();

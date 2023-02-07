@@ -11,7 +11,6 @@ namespace ProjectGenerator.Tests
         [TestCase("Controllers\\ConfigurationController.cs", "    /// Updates Configuration", -1, Resources.ConfigurationControllerUpdate)]
         [TestCase("Controllers\\ConfigurationController.cs", "    /// Deletes Configuration", -1, Resources.ConfigurationControllerDelete)]
         [TestCase("Services\\ConfigurationService.cs", "    async Task<ConfigurationModel> IConfigurationService.Get(string key, string serviceName)", 0, Resources.ConfigurationServiceGet)]
-        [TestCase("Controllers\\Models\\UserSettingModel.cs", "public class UserSettingModel", 0, Resources.Models_UserSettingModel)]
         public void Test_ConfigurationProvider(string path, string search, int previousLines, string expected)
         {
             var prog = new ProjectGenerator.Program();
@@ -29,6 +28,7 @@ namespace ProjectGenerator.Tests
         [Test]
         [TestCase("Controllers\\UserSettingController.cs", "    /// Creates new UserSetting", -1, Resources.UserSettingControllerCreate)]
         [TestCase("Controllers\\UserSettingController.cs", "    /// Gets UserSetting", -1, Resources.UserSettingControllerGet)]
+        [TestCase("Controllers\\Models\\UserSettingModel.cs", "public class UserSettingModel", 0, Resources.Models_UserSettingModel)]
         public void Test_UserSettings(string path, string search, int previousLines, string expected)
         {
             var prog = new ProjectGenerator.Program();

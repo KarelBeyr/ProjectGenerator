@@ -14,7 +14,7 @@ public class Program
         prog.Run(
         //TODO1: Update file InputInterfaces.cs
         //TODO2: Set those constants
-            basePath: @"c:\projects\ConfigProvider\", 
+            basePath: @"c:\projects\ConfigProvider\ConfigProvider\", 
             outputNamespace: "ConfigProvider", 
             dbSchema: "CP", 
             sourceNamespace: "ProjectGenerator.InputInterfaces");

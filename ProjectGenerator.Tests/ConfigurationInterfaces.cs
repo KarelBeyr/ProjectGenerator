@@ -17,6 +17,6 @@ public interface IConfiguration
     public bool Encrypted { get; }  //questionable
 
     [ControllerFromHeader("AuditCorrelationId")]
-    [OnlyInDb]
+    //[OnlyInDb]
     public string AuditCorrelationId { get; }
 }
