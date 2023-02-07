@@ -26,7 +26,7 @@ public class CommandsGenerator : GeneratorBase
             GenerateFields(cls.Fields, sb, "deleteModel", CommandCreateFields);
         }
         Directory.CreateDirectory($"{dm.BasePath}Services");
-        File.WriteAllText($"{dm.BasePath}Services\\Commands.g.cs", sb.ToString());
+        File.WriteAllText($"{dm.BasePath}Services\\Commands.cs", sb.ToString());
     }
 
     void CommandCreateFields(IndentingStringBuilder sb, IEnumerable<Field> fields)

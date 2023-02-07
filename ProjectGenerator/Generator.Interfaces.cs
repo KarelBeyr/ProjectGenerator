@@ -15,6 +15,6 @@ public class InterfacesGenerator : GeneratorBase
             sb.AppendLine($"public interface {iface.Name}{ifacesString}");
             GenerateFields(iface.Fields, sb);
         }
-        File.WriteAllText($"{dm.BasePath}Interfaces.g.cs", sb.ToString());
+        File.WriteAllText($"{dm.BasePath}Interfaces.cs", sb.ToString());
     }
 }

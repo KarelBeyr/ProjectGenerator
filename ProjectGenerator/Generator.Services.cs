@@ -135,7 +135,7 @@ public class ServicesGenerator : GeneratorBase
             sb.DecreaseIndent();
 
             Directory.CreateDirectory($"{dm.BasePath}Services\\Interfaces");
-            File.WriteAllText($"{dm.BasePath}Services\\{cls.Name}Service.g.cs", sb.ToString());
+            File.WriteAllText($"{dm.BasePath}Services\\{cls.Name}Service.cs", sb.ToString());
 
             sb = new IndentingStringBuilder();
             sb.AppendLine($"using {dm.OutputNamespace}.Models;");
@@ -150,7 +150,7 @@ public class ServicesGenerator : GeneratorBase
             sb.AppendLine($"Task Update(Update{cls.Name}Command command);");
             sb.AppendLine($"Task Delete(Delete{cls.Name}Command command);");
             sb.DecreaseIndent();
-            File.WriteAllText($"{dm.BasePath}Services\\Interfaces\\I{cls.Name}Service.g.cs", sb.ToString());
+            File.WriteAllText($"{dm.BasePath}Services\\Interfaces\\I{cls.Name}Service.cs", sb.ToString());
         }
     }
 

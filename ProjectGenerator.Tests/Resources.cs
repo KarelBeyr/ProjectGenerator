@@ -191,14 +191,14 @@ namespace ProjectGenerator.Tests
         await _unitOfWork.SaveChanges();
     }";
 
-        public const string Models_UserSettingModel = @"public partial class UserSettingModel
+        public const string Models_UserSettingModel = @"public class UserSettingModel
 {
     public string Name { get; set; }
     public string UserId { get; set; }
     public string Value { get; set; }
 }";
 
-        public const string Models_ConfigurationModel = @"public partial class ConfigurationModel
+        public const string Models_ConfigurationModel = @"public class ConfigurationModel
 {
     public string ServiceName { get; set; }
     public string Key { get; set; }

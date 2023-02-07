@@ -9,24 +9,34 @@ public class ModelsGenerator : GeneratorBase
 
     public void Generate(DataModel dm)
     {
-        var sb = new IndentingStringBuilder();
-        sb.AppendLine($"namespace {dm.OutputNamespace}.Models;");
-        sb.AppendLine();
+        Directory.CreateDirectory($"{dm.BasePath}Controllers\\Models");
         foreach (var cls in dm.Classes.Values.Where(e => e.IsModel))
         {
+            var sb = new IndentingStringBuilder();
+            sb.AppendLine($"namespace {dm.OutputNamespace}.Models;");
+            sb.AppendLine();
             GenerateXmlCommentSummary(cls, sb);
-            sb.AppendLine($"public partial class {cls.Name}Model");
+            sb.AppendLine($"public class {cls.Name}Model");
             GenerateFields(cls.Fields, sb, "model");
+            File.WriteAllText($"{dm.BasePath}Controllers\\Models\\{cls.Name}Model.cs", sb.ToString());
 
-            sb.AppendLine($"public partial class Create{cls.Name}Model");
+            sb = new IndentingStringBuilder();
+            sb.AppendLine($"namespace {dm.OutputNamespace}.Models;");
+            sb.AppendLine();
+            //GenerateXmlCommentSummary(cls, sb);
+            //GenerateXmlComment("summary", $"{cls.Name} to be created", sb);
+            sb.AppendLine($"public class Create{cls.Name}Model");
             GenerateFields(cls.Fields, sb, "createModel");
+            File.WriteAllText($"{dm.BasePath}Controllers\\Models\\Create{cls.Name}Model.cs", sb.ToString());
 
-            sb.AppendLine($"public partial class Update{cls.Name}Model");
+            sb = new IndentingStringBuilder();
+            sb.AppendLine($"namespace {dm.OutputNamespace}.Models;");
+            sb.AppendLine();
+            GenerateXmlCommentSummary(cls, sb);
+            sb.AppendLine($"public class Update{cls.Name}Model");
             GenerateFields(cls.Fields, sb, "updateModel");
+            File.WriteAllText($"{dm.BasePath}Controllers\\Models\\Update{cls.Name}Model.cs", sb.ToString());
         }
-        Directory.CreateDirectory($"{dm.BasePath}Controllers");
-
-        File.WriteAllText($"{dm.BasePath}Controllers\\Models.g.cs", sb.ToString());
     }
 
     public override bool ShouldGenerateField(Field field, string action)

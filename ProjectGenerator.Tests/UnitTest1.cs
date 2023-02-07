@@ -6,12 +6,12 @@ namespace ProjectGenerator.Tests
     public class Tests
     {
         [Test]
-        [TestCase("Controllers\\ConfigurationController.g.cs", "    /// Creates new Configuration", -1, Resources.ConfigurationControllerCreate)]
-        [TestCase("Controllers\\ConfigurationController.g.cs", "    [HttpGet(\"{key}\")]", -8, Resources.ConfigurationControllerGet)]
-        [TestCase("Controllers\\ConfigurationController.g.cs", "    /// Updates Configuration", -1, Resources.ConfigurationControllerUpdate)]
-        [TestCase("Controllers\\ConfigurationController.g.cs", "    /// Deletes Configuration", -1, Resources.ConfigurationControllerDelete)]
-        [TestCase("Services\\ConfigurationService.g.cs", "    async Task<ConfigurationModel> IConfigurationService.Get(string key, string serviceName)", 0, Resources.ConfigurationServiceGet)]
-        [TestCase("Controllers\\Models.g.cs", "public partial class UserSettingModel", 0, Resources.Models_UserSettingModel)]
+        [TestCase("Controllers\\ConfigurationController.cs", "    /// Creates new Configuration", -1, Resources.ConfigurationControllerCreate)]
+        [TestCase("Controllers\\ConfigurationController.cs", "    [HttpGet(\"{key}\")]", -8, Resources.ConfigurationControllerGet)]
+        [TestCase("Controllers\\ConfigurationController.cs", "    /// Updates Configuration", -1, Resources.ConfigurationControllerUpdate)]
+        [TestCase("Controllers\\ConfigurationController.cs", "    /// Deletes Configuration", -1, Resources.ConfigurationControllerDelete)]
+        [TestCase("Services\\ConfigurationService.cs", "    async Task<ConfigurationModel> IConfigurationService.Get(string key, string serviceName)", 0, Resources.ConfigurationServiceGet)]
+        [TestCase("Controllers\\Models\\UserSettingModel.cs", "public class UserSettingModel", 0, Resources.Models_UserSettingModel)]
         public void Test_ConfigurationProvider(string path, string search, int previousLines, string expected)
         {
             var prog = new ProjectGenerator.Program();
@@ -27,8 +27,8 @@ namespace ProjectGenerator.Tests
         }
 
         [Test]
-        [TestCase("Controllers\\UserSettingController.g.cs", "    /// Creates new UserSetting", -1, Resources.UserSettingControllerCreate)]
-        [TestCase("Controllers\\UserSettingController.g.cs", "    /// Gets UserSetting", -1, Resources.UserSettingControllerGet)]
+        [TestCase("Controllers\\UserSettingController.cs", "    /// Creates new UserSetting", -1, Resources.UserSettingControllerCreate)]
+        [TestCase("Controllers\\UserSettingController.cs", "    /// Gets UserSetting", -1, Resources.UserSettingControllerGet)]
         public void Test_UserSettings(string path, string search, int previousLines, string expected)
         {
             var prog = new ProjectGenerator.Program();
@@ -44,8 +44,8 @@ namespace ProjectGenerator.Tests
         }
 
         [Test]
-        [TestCase("Controllers\\SimpleThingController.g.cs", "    /// Creates new SimpleThing", -1, Resources.SimpleThingControllerCreate)]
-        [TestCase("Controllers\\SimpleThingController.g.cs", "    /// Gets SimpleThing", -1, Resources.SimpleThingControllerGet)]
+        [TestCase("Controllers\\SimpleThingController.cs", "    /// Creates new SimpleThing", -1, Resources.SimpleThingControllerCreate)]
+        [TestCase("Controllers\\SimpleThingController.cs", "    /// Gets SimpleThing", -1, Resources.SimpleThingControllerGet)]
         public void Test_SimpleThing(string path, string search, int previousLines, string expected)
         {
             var prog = new ProjectGenerator.Program();

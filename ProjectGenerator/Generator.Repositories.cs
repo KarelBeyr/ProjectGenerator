@@ -27,7 +27,7 @@ public class RepositoriesGenerator : GeneratorBase
 
             sb.AppendLine($"public class {cls.Name}Repository: I{cls.Name}Repository");
             sb.IncreaseIndent();
-            sb.AppendLine($"protected DbSet<{cls.Name}> DbSet {{ get; }}");
+            sb.AppendLine($"private DbSet<{cls.Name}> DbSet {{ get; }}");
             sb.AppendLine();
             sb.AppendLine($"public {cls.Name}Repository(DbSet<{cls.Name}> dbSet)");
             sb.IncreaseIndent();
@@ -77,7 +77,7 @@ public class RepositoriesGenerator : GeneratorBase
 
             sb.DecreaseIndent();
             Directory.CreateDirectory($"{dm.BasePath}Repositories\\Interfaces");
-            File.WriteAllText($"{dm.BasePath}Repositories\\{cls.Name}Repository.g.cs", sb.ToString());
+            File.WriteAllText($"{dm.BasePath}Repositories\\{cls.Name}Repository..cs", sb.ToString());
 
             sb = new IndentingStringBuilder();
             sb.AppendLine($"using {dm.OutputNamespace}.Entities;");
@@ -91,7 +91,7 @@ public class RepositoriesGenerator : GeneratorBase
             sb.AppendLine($"void Save({cls.Name} entity);");
             sb.AppendLine($"void Delete({cls.Name} entity);");
             sb.DecreaseIndent();
-            File.WriteAllText($"{dm.BasePath}Repositories\\Interfaces\\I{cls.Name}Repository.g.cs", sb.ToString());
+            File.WriteAllText($"{dm.BasePath}Repositories\\Interfaces\\I{cls.Name}Repository.cs", sb.ToString());
         }
     }
 

@@ -44,6 +44,6 @@ public class DbContextGenerator : GeneratorBase
         }
         sb.DecreaseIndent();
 
-        File.WriteAllText($"{dm.BasePath}{dm.DbSchema}DbContext.g.cs", sb.ToString());
+        File.WriteAllText($"{dm.BasePath}{dm.DbSchema}DbContext..cs", sb.ToString());
     }
 }

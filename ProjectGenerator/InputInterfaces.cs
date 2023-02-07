@@ -32,29 +32,35 @@ public interface IConfiguration
     public bool Encrypted { get; }  //questionable
 
     [ControllerFromHeader("AuditCorrelationId")]
-    [OnlyInDb]
+//    [OnlyInDb]
     public string AuditCorrelationId { get; }
 }
 
 //[DbEntity, Model]
 //public interface IUserSettingDefault
 //{
-//    [PrimaryKey]
+//    [PrimaryKey(IsAutogonerated = false)]
+//    [CommentSummary("Name of the user setting default")]
 //    public string Name { get; }
+//    [CommentSummary("Default value for this user setting")]
 //    public string Value { get; }
 //}
 
-[DbEntity, Model]
-public interface IUserSetting
-{
-    [PrimaryKey(IsAutogonerated = false)]
-    public string Name { get; }
+//[DbEntity, Model]
+//public interface IUserSetting
+//{
+//    [PrimaryKey(IsAutogonerated = false)]
+//    [CommentSummary("Name of the user setting")]
+//    public string Name { get; }
 
-    [PrimaryKey(IsAutogonerated = false)]
-    [ControllerFromHeader("Authorization")]
-    public string UserId { get; }
-    public string Value { get; }
-}
+//    [PrimaryKey(IsAutogonerated = false)]
+//    [ControllerFromHeader("Authorization")]
+//    [CommentSummary("Identification of user to whom this UserSetting belongs")]
+//    public string UserId { get; }
+
+//    [CommentSummary("Value of the user setting")]
+//    public string Value { get; }
+//}
 
 //[CommentSummary("Object type")]
 //[DbEntity, Model]

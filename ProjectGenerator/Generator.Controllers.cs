@@ -165,7 +165,7 @@ public class ControllersGenerator : GeneratorBase
 
             sb.DecreaseIndent();
             Directory.CreateDirectory($"{dm.BasePath}Controllers");
-            File.WriteAllText($"{dm.BasePath}Controllers\\{cls.Name}Controller.g.cs", sb.ToString());
+            File.WriteAllText($"{dm.BasePath}Controllers\\{cls.Name}Controller.cs", sb.ToString());
         }
     }
 
