@@ -129,7 +129,7 @@ public class ControllersGenerator : GeneratorBase
             {
                 sb.AppendLine($"{field.Name} = {Utils.LowerCaseFirst(field.Name)},");
             }
-            foreach (var field in cls.Fields.Where(e => !e.IsPrimaryKey() && !e.IsOnlyInDb && !e.IsReadOnly))
+            foreach (var field in cls.Fields.Where(e => !e.IsPrimaryKey() && !e.IsOnlyInDb && !e.IsReadOnly && e.ControllerFromHeader == null))
             {
                 sb.AppendLine($"{field.Name} = request.{field.Name},");
             }

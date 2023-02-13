@@ -171,6 +171,7 @@ namespace ProjectGenerator.Tests
             ServiceName = entity.ServiceName,
             Value = entity.Value,
             Encrypted = entity.Encrypted,
+            AuditCorrelationId = entity.AuditCorrelationId,
         };
         return model;
     }";
