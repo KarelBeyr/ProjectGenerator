@@ -124,6 +124,31 @@ namespace ProjectGenerator.Tests
         return NoContent();
     }";
 
+        public const string CreateConfigurationCommand = @"public partial class CreateConfigurationCommand
+{
+    public string Key { get; set; }
+    public string ServiceName { get; set; }
+    public string Value { get; set; }
+    public bool Encrypted { get; set; }
+    public string AuditCorrelationId { get; set; }
+}";
+
+        public const string UpdateConfigurationCommand = @"public partial class UpdateConfigurationCommand
+{
+    public string Key { get; set; }
+    public string ServiceName { get; set; }
+    public string Value { get; set; }
+    public bool Encrypted { get; set; }
+    public string AuditCorrelationId { get; set; }
+}";
+
+        public const string DeleteConfigurationCommand = @"public partial class DeleteConfigurationCommand
+{
+    public string Key { get; set; }
+    public string ServiceName { get; set; }
+    public string AuditCorrelationId { get; set; }
+}";
+
         public const string UserSettingControllerCreate = @"    /// <summary>
     /// Creates new UserSetting
     /// </summary>

@@ -11,6 +11,10 @@ namespace ProjectGenerator.Tests
         [TestCase("Controllers\\ConfigurationController.cs", "    /// Updates Configuration", -1, Resources.ConfigurationControllerUpdate)]
         [TestCase("Controllers\\ConfigurationController.cs", "    /// Deletes Configuration", -1, Resources.ConfigurationControllerDelete)]
         [TestCase("Services\\ConfigurationService.cs", "    async Task<ConfigurationModel> IConfigurationService.Get(string key, string serviceName)", 0, Resources.ConfigurationServiceGet)]
+
+        [TestCase("Services\\Commands\\CreateConfigurationCommand.cs", "public partial class CreateConfigurationCommand", 0, Resources.CreateConfigurationCommand)]
+        [TestCase("Services\\Commands\\UpdateConfigurationCommand.cs", "public partial class UpdateConfigurationCommand", 0, Resources.UpdateConfigurationCommand)]
+        [TestCase("Services\\Commands\\DeleteConfigurationCommand.cs", "public partial class DeleteConfigurationCommand", 0, Resources.DeleteConfigurationCommand)]
         public void Test_ConfigurationProvider(string path, string search, int previousLines, string expected)
         {
             var prog = new ProjectGenerator.Program();

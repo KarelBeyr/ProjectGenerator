@@ -10,7 +10,7 @@ public interface IConfiguration
     [PrimaryKey(IsAutogonerated = false, IsOptional = true)]
     //[CommentSummary("Name of service. Optional. Null means shared configuration for all services.")]
     public string ServiceName { get; }
-    [CommentSummary("Configuration value")]
+    //[CommentSummary("Configuration value")]
     public string Value { get; }
 
     //[CommentSummary("Flag, if given configuration value should be encrypted.")]
